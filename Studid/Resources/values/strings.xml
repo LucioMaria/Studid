@@ -1,0 +1,32 @@
+<resources>
+	<string name="app_name" translatable="false">Studid</string>
+	<string name="bottomnav_flash">Flashcards</string>
+	<string name="bottomnav_recordings">Recordings</string>
+	<string name="bottomnav_cmaps">Concept map</string>
+	<string name="bottomnav_exercise">Exercises</string>
+	<string name="dialog_main_text">Choose a file</string>
+	<string name="dialog_title_hint">Title</string>
+	<string name="dialog_uri_text">Uri</string>
+	<string name="dialog_button_search">Search file</string>
+	<string name="dialog_button_ok" translatable="false">OK</string>
+	<string name="dialog_button_cancel">Cancel</string>
+	<string name="dialog_exam_title">enter the name</string>
+	<string name="dialog_cancel_title">Delete the item?</string>
+	<string name="dialog_cancel_message">all the data will be deleted</string>
+	<string name="missing_file">The selected file was deleted or replaced</string>
+	<string name="empty_name_field">Please fill the name field</string>
+	<string name="isMemorized_checkbox">Memorized?</string>
+	<string name="empty_file_field">Please choose a file</string>
+	<string name="server_client_id" translatable="false">789838138525-lp4kc60n0uqnfntnk8415df52eg93fof.apps.googleusercontent.com</string>
+	<string name="logout" translatable="false">Logout</string>
+	<string name="alert_login">You need to be logged in in order to use this app.</string>
+	<string name="openfile_chooser">Open with</string>
+	<string name="overflow_name_field">please 10 caracter max</string>
+	<string name="used_name">Name already used</string>
+	<string name="connection_title">Connection required</string>
+	<string name="connection_message">you need to be online to perform this action</string>
+	<string name="login_title">Login required</string>
+	<string name="dialog_name_update">Update the name</string>
+
+
+</resources>

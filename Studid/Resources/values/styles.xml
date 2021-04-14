@@ -1,0 +1,39 @@
+<resources>
+	<!-- Base application theme. -->
+	<style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+		<!-- Customize your theme here. -->
+		<item name="alertDialogTheme">@style/AlertDialogTheme</item>
+		<item name="colorPrimary">@color/colorPrimary</item>
+		<item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+		<item name="colorAccent">@color/colorAccent</item>
+	</style>
+
+	<style name="AlertDialogTheme" parent="ThemeOverlay.MaterialComponents.Dialog.Alert">
+		<item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>
+		<item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
+	</style>
+
+	<style name="NegativeButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+		<item name="android:textColor">@color/colorTextPrimary</item>
+		<item name="android:backgroundTint">@color/transparent</item>
+	</style>
+
+	<style name="PositiveButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+		<item name="android:textColor">@color/colorTextPrimary</item>
+		<item name="android:backgroundTint">@color/transparent</item>
+	</style>
+
+	<style name="TextAppearance.App.CollapsingToolbar.Expanded" parent="TextAppearance.MaterialComponents.Headline5">
+		<item name="android:textColor">@color/colorIcons</item>
+		<item name="android:textSize">40sp</item>
+	</style>
+
+	<style name="TextAppearance.App.CollapsingToolbar.Collapsed" parent="TextAppearance.MaterialComponents.Headline6">
+		<item name="android:textColor">@color/colorIcons</item>
+	</style>
+
+	<style name="ShapeAppearanceOverlay.MyApp.Button.Circle" parent="">
+		<item name="cornerFamily">rounded</item>
+		<item name="cornerSize">50%</item>
+	</style>
+</resources>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="bottomnav_flash">Flashcards</string>
+	<string name="bottomnav_recordings">Registrazioni</string>
+	<string name="bottomnav_cmaps">Mappe concettuali</string>
+	<string name="bottomnav_exercise">Esercizi</string>
+	<string name="dialog_main_text">Scegli un file</string>
+	<string name="dialog_title_hint">Titolo</string>
+	<string name="dialog_uri_text">Uri</string>
+	<string name="dialog_button_search">Cerca File</string>
+	<string name="dialog_button_cancel">Annulla</string>
+	<string name="dialog_exam_title">Inserisci il nome dell esame</string>
+	<string name="dialog_cancel_title">Cancellare l\' elemento?</string>
+	<string name="dialog_cancel_message">tutti i dati saranno cancellati</string>
+	<string name="missing_file">Il file selezionato è stato cancellato o spostato</string>
+	<string name="empty_name_field">Perfavore riempire il campo nome</string>
+	<string name="isMemorized_checkbox">Memorizzato?</string>
+	<string name="empty_file_field">Perfavore scegliere un file</string>
+	<string name="alert_login">Devi aver effettuato il login per utilizzare quest\'app.</string>
+	<string name="openfile_chooser">Apri con</string>
+	<string name="overflow_name_field">massimo 10 caratteri perfavore</string>
+	<string name="used_name">Nome già utilizzato</string>
+	<string name="connection_title">Connessione necessaria</string>
+	<string name="connection_message">Devi essere online per effettuare questa azione</string>
+	<string name="login_title">Login Necessario</string>
+	<string name="dialog_name_update">Aggiorna il nome</string>
+</resources>

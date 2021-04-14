@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<item
+        android:id="@+id/botmenu_flashcards"
+        android:icon="@drawable/ic_filter_none_black_24dp"
+        android:title="@string/bottomnav_flash"
+        android:checked="true"/>
+	<item
+        android:id="@+id/botmenu_recordings"
+        android:icon="@drawable/ic_mic_black_24dp"
+        android:title="@string/bottomnav_recordings"/>
+	<item
+        android:id="@+id/botmenu_cmaps"
+        android:icon="@drawable/ic_wb_sunny_black_24dp"
+        android:title="@string/bottomnav_cmaps"/>
+	<item
+        android:id="@+id/botmenu_exercise"
+        android:icon="@drawable/ic_fitness_center_black_24dp"
+        android:title="@string/bottomnav_exercise"/>
+
+</menu>
