@@ -70,12 +70,6 @@ namespace Studid
             // string path = Path.Combine(Xamarin.Essentials.FileSystem.CacheDirectory, "google-services-studid.json");
             // System.Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", path);
             Forms.SetFlags("SwipeView_Experimental");
-            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DefaultSignIn)
-                 .RequestIdToken("1044961019460-ju2v6mvgar92vk9nfee8u4pq37m091q1.apps.googleusercontent.com")
-                 .RequestEmail()
-                 .RequestProfile()
-                 .Build();
-            mGoogleSignInClient = GoogleSignIn.GetClient(this, gso);
             rv = (RecyclerView)FindViewById(Resource.Id.recicler_view_exams);
             imageView = (ImageView)FindViewById(Resource.Id.empty_recycler_image);
             addButton = (ImageView)FindViewById(Resource.Id.add_button_exam);
@@ -103,7 +97,7 @@ namespace Studid
         public override bool OnCreateOptionsMenu(IMenu menu)
         {
             MenuInflater.Inflate(Resource.Menu.top_app_bar, menu);
-            setProPic(menu.GetItem(0));
+            setProPic();
             return base.OnCreateOptionsMenu(menu);
         }
 
@@ -223,14 +217,16 @@ namespace Studid
             base.OnWindowFocusChanged(hasFocus); 
             if (hasFocus)
             {
-                    // User is signed in
-                    FetchandListen();
+                // IMenuItem item = topAppBar.Menu.GetItem(0);
+                setProPic();
+                FetchandListen();
                 
             }
         }
 
         private void Adapter_ItemClick(object sender, ExamAdapterClickEventArgs e)
         {
+            // da cambiare con Plugin Cross Current
             if (mGoogleSignInClient != null)
             {
                 Intent intentExamName = new Intent(this, typeof(NavigationActivity));
@@ -447,7 +443,7 @@ namespace Studid
             }     
         }
 
-        private void setProPic(IMenuItem item)
+        private void setProPic()
         {
             FirebaseUser user = FirebaseAuth.Instance.CurrentUser;
 
@@ -458,11 +454,11 @@ namespace Studid
                         .Load(user.PhotoUrl)
                         .CenterCrop()
                         .CircleCrop()
-                        .Into(new MyTarget(item));
+                        .Into(topAppBar.GetChildAt(0));
             }
             else
             {
-                item.SetIcon(Resource.Drawable.ic_account_circle_light);
+                topAppBar.Menu.GetItem(0).SetIcon(Resource.Drawable.ic_account_circle_light);
             }
         }
 
@@ -487,27 +483,27 @@ namespace Studid
                 alert.Dispose();
                 LoginDialog loginDialog = new LoginDialog();
                 var transaction = SupportFragmentManager.BeginTransaction();
-                loginDialog.Show(transaction, "add exam");
+                loginDialog.Show(transaction, "dialog_login");
             });
             alert.Show();
         }
     }
     
-    class MyTarget : CustomTarget
-        {
-            private IMenuItem item;
-            public MyTarget(IMenuItem item)
-            {
-                this.item = item;
-            }
-            public override void OnLoadCleared(Drawable p0)
-            {
+    //class MyTarget : CustomTarget
+    //    {
+    //        private IMenuItem item;
+    //        public MyTarget(IMenuItem item)
+    //        {
+    //            this.item = item;
+    //        }
+    //        public override void OnLoadCleared(Drawable p0)
+    //        {
 
-            }
+    //        }
 
-            public override void OnResourceReady(Java.Lang.Object resource, ITransition transition)
-            {
-                item.SetIcon(new BitmapDrawable((Android.Content.Res.Resources)resource));
-            }
-        }
+    //        public override void OnResourceReady(Java.Lang.Object resource, ITransition transition)
+    //        {
+    //            item.SetIcon(new BitmapDrawable(resource));
+    //        }
+    //    }
  }

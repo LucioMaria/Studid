@@ -95,9 +95,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <GoogleServicesJson Include="google-services-studid.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </GoogleServicesJson>
+    <GoogleServicesJson Include="google-services.json" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Properties\AndroidManifest.xml" />
     <None Include="Assets\AboutAssets.txt" />

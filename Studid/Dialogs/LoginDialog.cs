@@ -46,7 +46,7 @@ namespace Studid.Dialogs
         view.FindViewById(Resource.Id.dismiss).Click += LoginDialogDismiss_Click;
         logOutButton.Click += LogOutButton_Click;
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DefaultSignIn)
-           .RequestIdToken("1044961019460-ju2v6mvgar92vk9nfee8u4pq37m091q1.apps.googleusercontent.com")
+           .RequestIdToken("789838138525-lp4kc60n0uqnfntnk8415df52eg93fof.apps.googleusercontent.com")
            .RequestEmail()
            .RequestProfile()
            .Build();
@@ -63,12 +63,12 @@ namespace Studid.Dialogs
 
     private void LogOutButton_Click(object sender, EventArgs e)
     {
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DefaultSignIn)
-             .RequestIdToken("1044961019460-ju2v6mvgar92vk9nfee8u4pq37m091q1.apps.googleusercontent.com")
-             .RequestEmail()
-             .RequestProfile()
-             .Build();
-        mGoogleSignInClient = GoogleSignIn.GetClient(this.Activity, gso);
+        //GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DefaultSignIn)
+        //     .RequestIdToken("1044961019460-ju2v6mvgar92vk9nfee8u4pq37m091q1.apps.googleusercontent.com")
+        //     .RequestEmail()
+        //     .RequestProfile()
+        //     .Build();
+        //mGoogleSignInClient = GoogleSignIn.GetClient(this.Activity, gso);
         mGoogleSignInClient.SignOut();
         updateUI(null);
     }

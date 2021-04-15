@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "789838138525-ksjanj1t2j6es2lo0n00pi115l5tba2m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.companyname.studid",
+            "certificate_hash": "051ea4ebedd08ebf3b2689c6465c7434b20c987b"
+          }
+        },
+        {
           "client_id": "789838138525-lp4kc60n0uqnfntnk8415df52eg93fof.apps.googleusercontent.com",
           "client_type": 3
         }
