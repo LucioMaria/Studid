@@ -48,16 +48,7 @@ namespace Studid
         MaterialToolbar topAppBar;
         IOnCompleteListener OnCompleteListener;
         private GoogleSignInClient mGoogleSignInClient;
-
-
-
-
-
         List<ExamModel> ExamList = new List<ExamModel>();
-
-
-
-
         AddExamDialog addExamFragment;
 
         protected override void OnCreate(Bundle savedInstanceState)
