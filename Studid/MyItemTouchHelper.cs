@@ -62,7 +62,7 @@ namespace Studid
                 {
                     await CrossCloudFirestore.Current
                          .Instance
-                         .Collection("exams")
+                         .Collection("Exams")
                          .Document(examname)
                          .Collection(storage_folder)
                          .Document(itemname)

@@ -93,7 +93,7 @@ namespace Studid.Fragments
             string itemcheck = itemcheck_clicked.itemName;
             DocumentReference ItemToUpdate = (DocumentReference)await CrossCloudFirestore.Current
                         .Instance
-                        .Collection("exams")
+                        .Collection("Exams")
                         .Document(examname)
                         .Collection(STORAGE_FOLDER)
                         .Document(itemcheck)
@@ -147,7 +147,7 @@ namespace Studid.Fragments
                 {
                     var document = await CrossCloudFirestore.Current
                     .Instance
-                    .Collection("exams")
+                    .Collection("Exams")
                     .Document(itemname)
                     .Collection(STORAGE_FOLDER)
                     .GetAsync();
@@ -160,7 +160,7 @@ namespace Studid.Fragments
                                     .Instance
                                     .Collection("Users")
                                     .Document(CrossFirebaseAuth.Current.Instance.CurrentUser.Uid)
-                                    .Collection("exams")
+                                    .Collection("Exams")
                                     .Document(itemNameNew)
                                     .SetAsync(itemmodel);
 
@@ -168,21 +168,9 @@ namespace Studid.Fragments
                                     .Instance
                                     .Collection("Users")
                                     .Document(CrossFirebaseAuth.Current.Instance.CurrentUser.Uid)
-                                    .Collection("exams")
+                                    .Collection("Exams")
                                     .Document(itemname)
                                     .DeleteAsync();
-
-
-
-                        /*    Google.Cloud.Firestore.CollectionReference exams = database.Collection("exams");
-                              Google.Cloud.Firestore.DocumentReference examDoc = exams.Document(examname);
-                              Google.Cloud.Firestore.DocumentSnapshot snapshot = await examDoc.GetSnapshotAsync();
-                              if (snapshot.Exists)
-                              {
-                                  await exams.Document(examNameNew).SetAsync(snapshot);
-                                  await examDoc.DeleteAsync();
-                              }
-                         */
                     }
                     nameDialog.Dismiss();
                 }
@@ -233,7 +221,7 @@ namespace Studid.Fragments
                                .Instance
                                .Collection("Users")
                                .Document(CrossFirebaseAuth.Current.Instance.CurrentUser.Uid)
-                               .Collection("exams")
+                               .Collection("Exams")
                                .Document(examname)
                                .Collection(STORAGE_FOLDER)
                                .AddSnapshotListener((snapshot, error) =>

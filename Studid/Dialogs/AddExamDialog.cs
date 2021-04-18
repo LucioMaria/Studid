@@ -88,7 +88,7 @@ namespace Studid.Dialogs
             model.cfu = cfuNumPic.Value;
             await CrossCloudFirestore.Current
                          .Instance
-                         .Collection("exams")
+                         .Collection("Exams")
                          .Document(model.examName)
                          .SetAsync(model);
             this.Dismiss();

@@ -46,7 +46,7 @@ namespace Studid.Dialogs
         view.FindViewById(Resource.Id.dismiss).Click += LoginDialogDismiss_Click;
         logOutButton.Click += LogOutButton_Click;
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DefaultSignIn)
-           .RequestIdToken("789838138525-lp4kc60n0uqnfntnk8415df52eg93fof.apps.googleusercontent.com")
+           .RequestIdToken("152337408575-ss0r3akabfenpbdcbrbk3c0b0vdp2l70.apps.googleusercontent.com")
            .RequestEmail()
            .RequestProfile()
            .Build();
@@ -87,8 +87,7 @@ namespace Studid.Dialogs
             signInButton.Visibility = ViewStates.Invisible;
             logOutButton.Visibility = ViewStates.Visible;
             emailtv.Text = account.DisplayName;
-            Glide
-                    .With(this.Context)
+            Glide.With(this.Context)
                     .Load(account.PhotoUrl.AbsoluteUri)
                     .Placeholder(Resource.Drawable.ic_account_circle_light)
                     .CenterCrop()

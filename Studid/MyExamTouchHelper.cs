@@ -63,7 +63,7 @@ namespace Studid
                          .Instance
                          .Collection("Users")
                          .Document(CrossFirebaseAuth.Current.Instance.CurrentUser.Uid)
-                         .Collection("exams")
+                         .Collection("Exams")
                          .Document(examname)
                          .DeleteAsync();
                 });

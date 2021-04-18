@@ -94,7 +94,7 @@ namespace Studid.Fragments
                         .Instance
                         .Collection("Users")
                         .Document(CrossFirebaseAuth.Current.Instance.CurrentUser.Uid)
-                        .Collection("exams")
+                        .Collection("Exams")
                         .Document(examname)
                         .Collection(STORAGE_FOLDER)
                         .Document(itemcheck)
@@ -151,7 +151,7 @@ namespace Studid.Fragments
                     .Instance
                     .Collection("Users")
                     .Document(CrossFirebaseAuth.Current.Instance.CurrentUser.Uid)
-                    .Collection("exams")
+                    .Collection("Exams")
                     .Document(itemname)
                     .Collection(STORAGE_FOLDER)
                     .GetAsync();
@@ -164,7 +164,7 @@ namespace Studid.Fragments
                                     .Instance
                                     .Collection("Users")
                                     .Document(CrossFirebaseAuth.Current.Instance.CurrentUser.Uid)
-                                    .Collection("exams")
+                                    .Collection("Exams")
                                     .Document(itemNameNew)
                                     .SetAsync(itemmodel);
 
@@ -172,13 +172,13 @@ namespace Studid.Fragments
                                     .Instance
                                     .Collection("Users")
                                     .Document(CrossFirebaseAuth.Current.Instance.CurrentUser.Uid)
-                                    .Collection("exams")
+                                    .Collection("Exams")
                                     .Document(itemname)
                                     .DeleteAsync();
 
 
 
-                        /*    Google.Cloud.Firestore.CollectionReference exams = database.Collection("exams");
+                        /*    Google.Cloud.Firestore.CollectionReference exams = database.Collection("Exams");
                               Google.Cloud.Firestore.DocumentReference examDoc = exams.Document(examname);
                               Google.Cloud.Firestore.DocumentSnapshot snapshot = await examDoc.GetSnapshotAsync();
                               if (snapshot.Exists)
@@ -215,7 +215,7 @@ namespace Studid.Fragments
                                .Instance
                                .Collection("Users")
                                .Document(CrossFirebaseAuth.Current.Instance.CurrentUser.Uid)
-                               .Collection("exams")
+                               .Collection("Exams")
                                .Document(examname)
                                .Collection(STORAGE_FOLDER)
                                .AddSnapshotListener((snapshot, error) =>

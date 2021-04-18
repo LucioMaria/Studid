@@ -90,7 +90,7 @@ namespace Studid.Adapter
         int position = this.recyclerView.GetChildAdapterPosition((View)sender);
         ExamModel examname_clicked = this.Items[position];
         string examname = examname_clicked.get_exam_name();
-        DocumentReference docRef = GetDatabase().Collection("exams").Document(examname);
+        DocumentReference docRef = GetDatabase().Collection("Exams").Document(examname);
         docRef.Update("examname", "Update");
     } */
 
@@ -144,7 +144,7 @@ public class ExamAdapterViewHolder : RecyclerView.ViewHolder
 
               ExamModel examname_clicked = this.Items[e.Position];
               string examname = examname_clicked.get_exam_name();
-              DocumentReference docRef = GetDatabase().Collection("exams").Document(examname);
+              DocumentReference docRef = GetDatabase().Collection("Exams").Document(examname);
               docRef.Update("examname", "Update");
           } */
     }
