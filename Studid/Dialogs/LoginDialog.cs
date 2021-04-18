@@ -51,7 +51,7 @@ namespace Studid.Dialogs
            .RequestProfile()
            .Build();
         mGoogleSignInClient = GoogleSignIn.GetClient(this.Activity, gso);
-        updateUI(null);
+        updateUI();
         signInButton.Click += SignInButton_Click;
         return view;
     }
@@ -69,16 +69,19 @@ namespace Studid.Dialogs
         //     .RequestProfile()
         //     .Build();
         //mGoogleSignInClient = GoogleSignIn.GetClient(this.Activity, gso);
+
         mGoogleSignInClient.SignOut();
-        updateUI(null);
+        CrossFirebaseAuth.Current.Instance.SignOut();
+        updateUI();
     }
 
     private void LoginDialogDismiss_Click(object sender, EventArgs e)
     {
         this.Dismiss();
     }
-    private void updateUI(IUser account)
+    private void updateUI()
     {
+        var account = CrossFirebaseAuth.Current.Instance.CurrentUser;
         if (account != null)
         {
             signInButton.Visibility = ViewStates.Invisible;
@@ -114,12 +117,12 @@ namespace Studid.Dialogs
                 var credential = CrossFirebaseAuth.Current.GoogleAuthProvider.GetCredential(account.IdToken, null);
                 var firebaseresult = await CrossFirebaseAuth.Current.Instance.SignInWithCredentialAsync(credential);
                 //crasha nella linea sotto
-                updateUI(CrossFirebaseAuth.Current.Instance.CurrentUser);
+                updateUI();
             }
             else
             {  //Google Sign In failed, update UI appropriately
                 Log.Info("googlesignin", "fail");
-                updateUI(null);
+                updateUI();
             }
 
         }

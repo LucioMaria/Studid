@@ -34,6 +34,7 @@ using Firebase.Auth;
 using AlertDialog = AndroidX.AppCompat.App.AlertDialog;
 using Android.Net;
 using Plugin.FirebaseAuth;
+using Android.Graphics;
 
 namespace Studid
 {
@@ -454,7 +455,7 @@ namespace Studid
                         .Load(user.PhotoUrl)
                         .CenterCrop()
                         .CircleCrop()
-                        .Into(topAppBar.GetChildAt(0));
+                        .Into(new MyTarget(topAppBar.Menu.GetItem(0)));
             }
             else
             {
@@ -476,8 +477,8 @@ namespace Studid
         private void alertLogin()
         {
             AlertDialog.Builder alert = new AlertDialog.Builder(this);
-            alert.SetTitle(Resource.String.connection_title)
-                    .SetMessage(Resource.String.connection_message)
+            alert.SetTitle(Resource.String.login_title)
+                    .SetMessage(Resource.String.alert_login)
                     .Show();
             alert.SetNeutralButton("Ok", delegate {
                 alert.Dispose();
@@ -488,22 +489,22 @@ namespace Studid
             alert.Show();
         }
     }
-    
-    //class MyTarget : CustomTarget
-    //    {
-    //        private IMenuItem item;
-    //        public MyTarget(IMenuItem item)
-    //        {
-    //            this.item = item;
-    //        }
-    //        public override void OnLoadCleared(Drawable p0)
-    //        {
 
-    //        }
+    class MyTarget : CustomTarget
+    {
+        private IMenuItem item;
+        public MyTarget(IMenuItem item)
+        {
+            this.item = item;
+        }
+        public override void OnLoadCleared(Drawable p0)
+        {
 
-    //        public override void OnResourceReady(Java.Lang.Object resource, ITransition transition)
-    //        {
-    //            item.SetIcon(new BitmapDrawable(resource));
-    //        }
-    //    }
- }
+        }
+
+        public override void OnResourceReady(Java.Lang.Object resource, ITransition transition)
+        {
+            item.SetIcon(new BitmapDrawable(resource as Bitmap));
+        }
+    }
+}
