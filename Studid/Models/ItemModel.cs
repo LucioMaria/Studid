@@ -14,7 +14,7 @@ namespace Studid.Models
 {
     class ItemModel : IComparable
     {
-        [MapTo("itemId")]
+        [Id]
         public string itemId { get; set; }
 
         [MapTo("itemName")]

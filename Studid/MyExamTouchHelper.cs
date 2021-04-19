@@ -47,7 +47,7 @@ namespace Studid
 
     public override async void OnSwiped(RecyclerView.ViewHolder viewHolder, int swipedir)
     {
-        var holder = viewHolder as ExamAdapterViewHolder;
+        var holder = viewHolder as ExamViewHolder;
 
             if (isOnline(Application.Context))
             {

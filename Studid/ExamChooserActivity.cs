@@ -47,7 +47,6 @@ namespace Studid
         ExamAdapter adapter;
         MaterialToolbar topAppBar;
         private GoogleSignInClient mGoogleSignInClient;
-        List<ExamModel> ExamList = new List<ExamModel>();
         AddExamDialog addExamFragment;
         private bool isLoginAlerted = false;
 
@@ -99,7 +98,7 @@ namespace Studid
         private void SetupRecyclerView()
         {
             rv.SetLayoutManager(new LinearLayoutManager(this));
-            adapter = new ExamAdapter(this.ApplicationContext, rv, ExamList);
+            adapter = new ExamAdapter(this.ApplicationContext, rv);
             adapter.ItemClick += Adapter_ItemClick;
             adapter.Exam_NameClick += ExamNameTV_Click;
             adapter.Exam_DateClick += Exam_DateClick;
@@ -126,7 +125,6 @@ namespace Studid
                         .Collection("Exams")
                         .AddSnapshotListener((snapshot, error) =>
                         {
-                            //todo non fetcha la lista di esami
                             if (snapshot != null)
                             {
                                 List<ExamModel> TExamList = new List<ExamModel>();
@@ -138,19 +136,22 @@ namespace Studid
                                             TExamList.Add(documentChange.Document.ToObject<ExamModel>());
                                             break;
                                         case DocumentChangeType.Removed:
-                                            TExamList.Remove(documentChange.Document.ToObject<ExamModel>());
+                                            adapter.ExamList.Remove(documentChange.Document.ToObject<ExamModel>());
                                             break;
-                                        //case DocumentChangeType.Modified:
-                                        //    var em = documentChange.Document.ToObject<ExamModel>();
-                                        //    var index = ExamList.FindIndex(x => x.examName.Equals(em.examName));
-                                        //    ExamList.Remove(em);
-                                        //    ExamList.Insert(index, em);
-                                        //   break;
+                                        case DocumentChangeType.Modified:
+                                            var em = documentChange.Document.ToObject<ExamModel>();
+                                            var index = ExamList.FindIndex(x => x.examName.Equals(em.examName));
+                                            ExamList.Remove(em);
+                                            ExamList.Insert(index, em);
+                                            break;
                                     }
                                 }
+                                if (TExamList.Count != 0) 
+                                {
                                 TExamList.Sort();
-                                ExamList = TExamList;
+                                adapter.ExamList = TExamList;
                                 adapter.NotifyDataSetChanged();
+                                }
                                 if (adapter.ItemCount == 0)
                                 {
                                     imageView.Visibility = ViewStates.Visible;
@@ -164,13 +165,13 @@ namespace Studid
                             }
                         });
                 }
-                else if (!isLoginAlerted)
-                {
-                    isLoginAlerted = true;
-                    alertLogin();
-                }
-                else
-                {
+                else 
+                { 
+                    if (!isLoginAlerted)
+                    {
+                        isLoginAlerted = true;
+                        alertLogin();
+                    }
                     imageView.Visibility = ViewStates.Visible;
                     rv.Visibility = ViewStates.Invisible;
                 }
@@ -181,10 +182,10 @@ namespace Studid
             if (mGoogleSignInClient != null)
             {
                 Intent intentExamName = new Intent(this, typeof(NavigationActivity));
-                intentExamName.PutExtra("exam_name", this.ExamList[e.Position].examName);
-                intentExamName.PutExtra("exam_id", this.ExamList[e.Position].examId);
-                intentExamName.PutExtra("exam_date", this.ExamList[e.Position].date.ToString());
-                intentExamName.PutExtra("exam_cfu", this.ExamList[e.Position].cfu);
+                intentExamName.PutExtra("exam_name", adapter.ExamList[e.Position].examName);
+                intentExamName.PutExtra("exam_id", adapter.ExamList[e.Position].examId);
+                intentExamName.PutExtra("exam_date", adapter.ExamList[e.Position].date.ToString());
+                intentExamName.PutExtra("exam_cfu", adapter.ExamList[e.Position].cfu);
                 StartActivity(intentExamName);
                 Log.Info("Onclick", "Click");
             }
@@ -200,14 +201,14 @@ namespace Studid
             }
             else
             {
-                ExamModel examname_clicked = this.ExamList[e.Position];
-                string examname = examname_clicked.examName;
+                ExamModel examname_clicked = adapter.ExamList[e.Position];
+                string examId = examname_clicked.examId;
                 Dialog cfuDialog = new Dialog(this);
                 cfuDialog.SetContentView(Resource.Layout.dialog_exam_cfu);
                 NumberPicker numberPicker = (NumberPicker)cfuDialog.FindViewById(Resource.Id.cfu_numpic);
                 numberPicker.MinValue = 0;
                 numberPicker.MaxValue = 25;
-                numberPicker.Value = this.ExamList[e.Position].cfu;
+                numberPicker.Value = adapter.ExamList[e.Position].cfu;
                 Android.Widget.Button okButton = (Android.Widget.Button)cfuDialog.FindViewById(Resource.Id.name_ok);
                 Android.Widget.Button cancelButton = (Android.Widget.Button)cfuDialog.FindViewById(Resource.Id.cfu_cancel);
                 cancelButton.Click += delegate
@@ -221,7 +222,7 @@ namespace Studid
                               .Collection("Users")
                               .Document(CrossFirebaseAuth.Current.Instance.CurrentUser.Uid)
                               .Collection("Exams")
-                              .Document(examname)
+                              .Document(examId)
                               .UpdateAsync("cfu", numberPicker.Value);
                     cfuDialog.Dismiss();
                 };
@@ -238,8 +239,8 @@ namespace Studid
             }
             else
             {
-                ExamModel examdate_clicked = this.ExamList[e.Position];
-                string examname = examdate_clicked.examName;
+                ExamModel examdate_clicked = adapter.ExamList[e.Position];
+                string examId = examdate_clicked.examId;
                 Plugin.CloudFirestore.Timestamp examdate = examdate_clicked.date;
                 Dialog calendardialog = new Dialog(this);
                 Calendar calendar = Calendar.GetInstance(Locale.Italy);
@@ -268,7 +269,7 @@ namespace Studid
                              .Collection("Users")
                              .Document(CrossFirebaseAuth.Current.Instance.CurrentUser.Uid)
                              .Collection("Exams")
-                             .Document(examname)
+                             .Document(examId)
                              .UpdateAsync("date", timestamp);
                     calendardialog.Dismiss();
                 }
@@ -283,12 +284,12 @@ namespace Studid
             }
             else
             {
-                ExamModel examname_clicked = this.ExamList[e.Position];
-                string examname = examname_clicked.examName;
+                ExamModel examname_clicked = adapter.ExamList[e.Position];
+                string examId = examname_clicked.examId;
                 Dialog nameDialog = new Dialog(this);
                 nameDialog.SetContentView(Resource.Layout.dialog_name_update);
                 EditText editText = (EditText)nameDialog.FindViewById(Resource.Id.dialog_name_editText);
-                editText.Text = examname;
+                editText.Text = examname_clicked.examName;
                 TextInputLayout textInputLayout = (TextInputLayout)nameDialog.FindViewById(Resource.Id.dialog_name_input_layout);
                 nameDialog.Show();
                 Android.Widget.Button okButton = (Android.Widget.Button)nameDialog.FindViewById(Resource.Id.name_ok);
@@ -313,38 +314,38 @@ namespace Studid
                     }
                     else
                     {
-                        var document = await CrossCloudFirestore.Current
+                        await CrossCloudFirestore.Current
                         .Instance
                         .Collection("Users")
                         .Document(CrossFirebaseAuth.Current.Instance.CurrentUser.Uid)
                         .Collection("Exams")
-                        .Document(examname)
-                        .GetAsync();
-                        if (document.Exists)
-                        {
-                            ExamModel exammodel = document.ToObject<ExamModel>();
-                            exammodel.examName = examNameNew;
+                        .Document(examId)
+                        .UpdateAsync("examName", examNameNew);
+                        //.GetAsync();
+                        //if (document.Exists)
+                        //{
+                        //    ExamModel exammodel = document.ToObject<ExamModel>();
+                        //    exammodel.examName = examNameNew;
 
-                            await CrossCloudFirestore.Current
-                                        .Instance
-                                        .Collection("Users")
-                                        .Document(CrossFirebaseAuth.Current.Instance.CurrentUser.Uid)
-                                        .Collection("Exams")
-                                        .Document(examNameNew)
-                                        .SetAsync(exammodel);
+                        //    await CrossCloudFirestore.Current
+                        //                .Instance
+                        //                .Collection("Users")
+                        //                .Document(CrossFirebaseAuth.Current.Instance.CurrentUser.Uid)
+                        //                .Collection("Exams")
+                        //                .Document(examNameNew)
+                        //                .SetAsync(exammodel);
 
-                            await CrossCloudFirestore.Current
-                                        .Instance
-                                        .Collection("Users")
-                                        .Document(CrossFirebaseAuth.Current.Instance.CurrentUser.Uid)
-                                        .Collection("Exams")
-                                        .Document(examname)
-                                        .DeleteAsync();
-                        }
+                        //    await CrossCloudFirestore.Current
+                        //                .Instance
+                        //                .Collection("Users")
+                        //                .Document(CrossFirebaseAuth.Current.Instance.CurrentUser.Uid)
+                        //                .Collection("Exams")
+                        //                .Document(examname)
+                        //                .DeleteAsync();
+                        //}
                         nameDialog.Dismiss();
                             }
                         };
-
                     cancelButton.Click += delegate
                     {
                        nameDialog.Dismiss();
@@ -352,7 +353,7 @@ namespace Studid
             }   
             bool IsSameName(string examNewName)
             {
-                foreach (ExamModel exam in ExamList)
+                foreach (ExamModel exam in adapter.ExamList)
                 {
                     if (exam.examName.Equals(examNewName))
                         return true;

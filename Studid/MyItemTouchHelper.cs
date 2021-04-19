@@ -49,7 +49,7 @@ namespace Studid
 
         public override async void OnSwiped(RecyclerView.ViewHolder viewHolder, int swipedir)
         {
-            var holder = viewHolder as ItemAdapterViewHolder;
+            var holder = viewHolder as ItemViewHolder;
             if (isOnline(Application.Context))
             {
                 string itemname = holder.textView.Text;

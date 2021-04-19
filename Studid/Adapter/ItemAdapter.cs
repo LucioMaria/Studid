@@ -36,7 +36,7 @@ namespace Studid.Adapter
         {
 
             View itemview = LayoutInflater.From(parent.Context).Inflate(Resource.Layout.item_row_layout, parent, false);
-            var vh = new ItemAdapterViewHolder(itemview, OnClick, OnLongClick, OnItemNameClick, OnItemCheckClick, OnItemSelectClick);
+            var vh = new ItemViewHolder(itemview, OnClick, OnLongClick, OnItemNameClick, OnItemCheckClick, OnItemSelectClick);
             return vh;
         }
 
@@ -44,7 +44,7 @@ namespace Studid.Adapter
         public override void OnBindViewHolder(RecyclerView.ViewHolder viewHolder, int position)
         {
             var examitem = Items[position];
-            var holder = viewHolder as ItemAdapterViewHolder;
+            var holder = viewHolder as ItemViewHolder;
             // Replace the contents of the view with that element
             // var holder = viewHolder as ItemAdapterViewHolder;
             holder.textView.Text = examitem.itemName;
@@ -72,7 +72,7 @@ namespace Studid.Adapter
 
     }
 
-    public class ItemAdapterViewHolder : RecyclerView.ViewHolder
+    public class ItemViewHolder : RecyclerView.ViewHolder
     {
         //public TextView TextView { get; set; }
         public TextView textView { get; set; }
@@ -81,7 +81,7 @@ namespace Studid.Adapter
         public ImageButton selectItem { get; set; }
 
 
-        public ItemAdapterViewHolder(View itemView, Action<ItemAdapterClickEventArgs> clickListener,
+        public ItemViewHolder(View itemView, Action<ItemAdapterClickEventArgs> clickListener,
                             Action<ItemAdapterClickEventArgs> longClickListener, Action<ItemAdapterClickEventArgs> nameClickListener, Action<ItemAdapterClickEventArgs> checkClickListener, Action<ItemAdapterClickEventArgs> selectClickListener) : base(itemView)
         {
             //TextView = v;

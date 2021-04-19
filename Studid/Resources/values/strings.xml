@@ -17,7 +17,7 @@
 	<string name="empty_name_field">Please fill the name field</string>
 	<string name="isMemorized_checkbox">Memorized?</string>
 	<string name="empty_file_field">Please choose a file</string>
-	<string name="server_client_id" translatable="false">789838138525-lp4kc60n0uqnfntnk8415df52eg93fof.apps.googleusercontent.com</string>
+	<string name="server_client_id" translatable="false">152337408575-ss0r3akabfenpbdcbrbk3c0b0vdp2l70.apps.googleusercontent.com</string>
 	<string name="logout" translatable="false">Logout</string>
 	<string name="alert_login">You need to be logged in in order to use this app.</string>
 	<string name="openfile_chooser">Open with</string>

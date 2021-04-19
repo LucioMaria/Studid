@@ -31,13 +31,10 @@ namespace Studid.Dialogs
     public override void OnCreate(Bundle savedInstanceState)
     {
         base.OnCreate(savedInstanceState);
-        // Create your fragment here
     }
 
     public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        // Use this to return your custom view for this Fragment
-
         View view = inflater.Inflate(Resource.Layout.dialog_login, container, false);
         signInButton = (SignInButton)view.FindViewById(Resource.Id.sign_in_button);
         logOutButton = (Button)view.FindViewById(Resource.Id.logout_button);
@@ -46,7 +43,7 @@ namespace Studid.Dialogs
         view.FindViewById(Resource.Id.dismiss).Click += LoginDialogDismiss_Click;
         logOutButton.Click += LogOutButton_Click;
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DefaultSignIn)
-           .RequestIdToken("152337408575-ss0r3akabfenpbdcbrbk3c0b0vdp2l70.apps.googleusercontent.com")
+           .RequestIdToken(Resources.GetString(Resource.String.server_client_id))
            .RequestEmail()
            .RequestProfile()
            .Build();
@@ -63,13 +60,6 @@ namespace Studid.Dialogs
 
     private void LogOutButton_Click(object sender, EventArgs e)
     {
-        //GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DefaultSignIn)
-        //     .RequestIdToken("1044961019460-ju2v6mvgar92vk9nfee8u4pq37m091q1.apps.googleusercontent.com")
-        //     .RequestEmail()
-        //     .RequestProfile()
-        //     .Build();
-        //mGoogleSignInClient = GoogleSignIn.GetClient(this.Activity, gso);
-
         mGoogleSignInClient.SignOut();
         CrossFirebaseAuth.Current.Instance.SignOut();
         updateUI();
