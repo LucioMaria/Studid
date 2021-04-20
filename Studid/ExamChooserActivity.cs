@@ -127,30 +127,28 @@ namespace Studid
                         {
                             if (snapshot != null)
                             {
-                                List<ExamModel> TExamList = new List<ExamModel>();
                                 foreach (var documentChange in snapshot.DocumentChanges)
                                 {
+                                    var newExam = documentChange.Document.ToObject<ExamModel>();
+                                    var i = adapter.ExamList.FindIndex(x => x.examId.Equals(newExam.examId));
                                     switch (documentChange.Type)
-                                    {
+                                    {                                      
                                         case DocumentChangeType.Added:
-                                            TExamList.Add(documentChange.Document.ToObject<ExamModel>());
+                                            if (i == -1)
+                                            {
+                                                adapter.ExamList.Add(newExam);
+                                                adapter.NotifyItemInserted(adapter.ItemCount - 1);
+                                            }
                                             break;
                                         case DocumentChangeType.Removed:
-                                            adapter.ExamList.Remove(documentChange.Document.ToObject<ExamModel>());
+                                            adapter.ExamList.Remove(newExam);
+                                            adapter.NotifyItemRemoved(i);
                                             break;
                                         case DocumentChangeType.Modified:
-                                            var em = documentChange.Document.ToObject<ExamModel>();
-                                            var index = ExamList.FindIndex(x => x.examName.Equals(em.examName));
-                                            ExamList.Remove(em);
-                                            ExamList.Insert(index, em);
+                                            adapter.ExamList[i] = newExam;
+                                            adapter.NotifyItemChanged(i);
                                             break;
                                     }
-                                }
-                                if (TExamList.Count != 0) 
-                                {
-                                TExamList.Sort();
-                                adapter.ExamList = TExamList;
-                                adapter.NotifyDataSetChanged();
                                 }
                                 if (adapter.ItemCount == 0)
                                 {
@@ -321,45 +319,14 @@ namespace Studid
                         .Collection("Exams")
                         .Document(examId)
                         .UpdateAsync("examName", examNameNew);
-                        //.GetAsync();
-                        //if (document.Exists)
-                        //{
-                        //    ExamModel exammodel = document.ToObject<ExamModel>();
-                        //    exammodel.examName = examNameNew;
-
-                        //    await CrossCloudFirestore.Current
-                        //                .Instance
-                        //                .Collection("Users")
-                        //                .Document(CrossFirebaseAuth.Current.Instance.CurrentUser.Uid)
-                        //                .Collection("Exams")
-                        //                .Document(examNameNew)
-                        //                .SetAsync(exammodel);
-
-                        //    await CrossCloudFirestore.Current
-                        //                .Instance
-                        //                .Collection("Users")
-                        //                .Document(CrossFirebaseAuth.Current.Instance.CurrentUser.Uid)
-                        //                .Collection("Exams")
-                        //                .Document(examname)
-                        //                .DeleteAsync();
-                        //}
                         nameDialog.Dismiss();
-                            }
-                        };
-                    cancelButton.Click += delegate
-                    {
-                       nameDialog.Dismiss();
-                    };
-            }   
-            bool IsSameName(string examNewName)
-            {
-                foreach (ExamModel exam in adapter.ExamList)
+                    }
+                };
+                cancelButton.Click += delegate
                 {
-                    if (exam.examName.Equals(examNewName))
-                        return true;
-                }
-                return false;
-            }     
+                    nameDialog.Dismiss();
+                };
+            }           
         }
 
         private void setProPic()
@@ -380,7 +347,15 @@ namespace Studid
                 topAppBar.Menu.GetItem(0).SetIcon(Resource.Drawable.ic_account_circle_light);
             }
         }
-
+        bool IsSameName(string examNewName)
+        {
+            foreach (ExamModel exam in adapter.ExamList)
+            {
+                if (exam.examName.Equals(examNewName))
+                    return true;
+            }
+            return false;
+        }
         private bool isOnline(Context context)
         {
             ConnectivityManager cm = (ConnectivityManager)context.GetSystemService(Context.ConnectivityService);
