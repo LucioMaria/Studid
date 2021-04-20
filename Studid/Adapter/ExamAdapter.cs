@@ -45,6 +45,7 @@ namespace Studid.Adapter
         {
             var exam = ExamList[position];
             var holder = viewHolder as ExamViewHolder;
+            holder.examId = exam.examId;
             holder.examNameTV.Text = exam.examName;
             DateFormat df = new SimpleDateFormat("dd/MM/yy", Locale.Italy);
             Date mydate = new Date(exam.date.ToDateTime().ToLongDateString());
@@ -82,7 +83,9 @@ namespace Studid.Adapter
         public Button cfuButton { get; set; }
         public ImageButton selectButton { get; set; }
 
-        public ExamViewHolder(View itemView, Action<ExamAdapterClickEventArgs> clickListener,
+        public string examId;
+
+    public ExamViewHolder(View itemView, Action<ExamAdapterClickEventArgs> clickListener,
                             Action<ExamAdapterClickEventArgs> longClickListener, Action<ExamAdapterClickEventArgs> nameClickListener, Action<ExamAdapterClickEventArgs> dateClickListener, Action<ExamAdapterClickEventArgs> cfuClickListener) : base(itemView)
         {
             //TextView = v;

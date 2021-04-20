@@ -90,7 +90,7 @@
     <Compile Include="Models\ItemModel.cs" />
     <Compile Include="Models\UserModel.cs" />
     <Compile Include="MyItemTouchHelper.cs" />
-    <Compile Include="MyExamTouchHelper.cs" />
+    <Compile Include="ExamTouchCallback.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

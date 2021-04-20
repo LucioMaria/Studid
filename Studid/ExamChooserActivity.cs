@@ -56,13 +56,12 @@ namespace Studid
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             SetContentView(Resource.Layout.activity_exam_chooser);
             Plugin.CurrentActivity.CrossCurrentActivity.Current.Init(this, savedInstanceState);
-            Forms.SetFlags("SwipeView_Experimental");
+
             rv = (RecyclerView)FindViewById(Resource.Id.recicler_view_exams);
             imageView = (ImageView)FindViewById(Resource.Id.empty_recycler_image);
             addButton = (ImageView)FindViewById(Resource.Id.add_button_exam);
             topAppBar = FindViewById<MaterialToolbar>(Resource.Id.topAppBar);
             SetSupportActionBar(topAppBar);
-            // topAppBar.Click += TopAppBar_Click;
             addButton.Click += AddButton_Click;
             SetupRecyclerView();
         }
@@ -104,9 +103,9 @@ namespace Studid
             adapter.Exam_DateClick += Exam_DateClick;
             adapter.Exam_CfuClick += Exam_CfuClick;
             rv.SetAdapter(adapter);
-            //ItemTouchHelper.Callback callback = new MyExamTouchHelper();
-            //ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
-            //itemTouchHelper.AttachToRecyclerView(rv);
+            ItemTouchHelper.SimpleCallback callback = new ExamTouchCallback(this);
+            ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
+            itemTouchHelper.AttachToRecyclerView(rv);
         }
         public override void OnWindowFocusChanged(bool hasFocus)
         {
@@ -139,6 +138,8 @@ namespace Studid
                                                 adapter.ExamList.Add(newExam);
                                                 adapter.NotifyItemInserted(adapter.ItemCount - 1);
                                             }
+                                            else
+                                                adapter.NotifyDataSetChanged();
                                             break;
                                         case DocumentChangeType.Removed:
                                             adapter.ExamList.Remove(newExam);
@@ -355,7 +356,7 @@ namespace Studid
                     return true;
             }
             return false;
-        }
+        }     
         private bool isOnline(Context context)
         {
             ConnectivityManager cm = (ConnectivityManager)context.GetSystemService(Context.ConnectivityService);

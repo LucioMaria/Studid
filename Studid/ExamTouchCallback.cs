@@ -26,68 +26,65 @@ using Plugin.FirebaseAuth;
 
 namespace Studid
 {
-    public class MyExamTouchHelper : ItemTouchHelper.Callback
-{
-        public  MyExamTouchHelper() : base((IntPtr)0, (JniHandleOwnership)ItemTouchHelper.Left)
+    public class ExamTouchCallback : ItemTouchHelper.SimpleCallback
     {
+        private Context context;
+        public  ExamTouchCallback(Context context) : base(0,ItemTouchHelper.Left)
+        {
+            this.context = context;
+        }
         
-    }
-        
-    public override int GetMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder)
-    {
-        return MakeMovementFlags(0, ItemTouchHelper.Left);
-    }
-
-    public override bool OnMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target)
-    {
-        return true;
-    }
-
-
-
-    public override async void OnSwiped(RecyclerView.ViewHolder viewHolder, int swipedir)
-    {
-        var holder = viewHolder as ExamViewHolder;
-
-            if (isOnline(Application.Context))
-            {
-                string examname = holder.examNameTV.Text;
-                FirebaseUser user = FirebaseAuth.Instance.CurrentUser;
-                AlertDialog.Builder alertDialog = new AlertDialog.Builder(Application.Context);
-
-                alertDialog.SetTitle(Resource.String.dialog_cancel_title);
-                alertDialog.SetMessage(Resource.String.dialog_cancel_message);
-                alertDialog.SetNeutralButton("Ok", async delegate
-                {
-                    await CrossCloudFirestore.Current
-                         .Instance
-                         .Collection("Users")
-                         .Document(CrossFirebaseAuth.Current.Instance.CurrentUser.Uid)
-                         .Collection("Exams")
-                         .Document(examname)
-                         .DeleteAsync();
-                });
-                alertDialog.SetNeutralButton("Cancel", delegate
-                {
-                    alertDialog.Dispose();
-                });
-                alertDialog.Show();
-            }
-            else
-            {
-                AlertDialog.Builder alert = new AlertDialog.Builder(Application.Context);
-                alert.SetTitle(Resource.String.connection_title)
-                        .SetMessage(Resource.String.connection_message)
-                        .Show();
-            }
+        public override int GetMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder)
+        {
+            return MakeMovementFlags(0, ItemTouchHelper.Left);
         }
 
-        public override void OnChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, bool isCurrentlyActive)
+        public override bool OnMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target)
+        {
+            return true;
+        }
+        public override void OnSwiped(RecyclerView.ViewHolder viewHolder, int swipedir)
+        {
+            var holder = viewHolder as ExamViewHolder;
+
+                if (isOnline(context))
+                {
+                    FirebaseUser user = FirebaseAuth.Instance.CurrentUser;
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+                    //need to delete also the elements in storage
+                    alertDialog.SetTitle(Resource.String.dialog_cancel_title);
+                    alertDialog.SetMessage(Resource.String.dialog_cancel_message);
+                    alertDialog.SetPositiveButton("Ok", async delegate
+                    {
+                        await CrossCloudFirestore.Current
+                             .Instance
+                             .Collection("Users")
+                             .Document(CrossFirebaseAuth.Current.Instance.CurrentUser.Uid)
+                             .Collection("Exams")
+                             .Document(holder.examId)
+                             .DeleteAsync();
+                    });
+                    alertDialog.SetNegativeButton("Cancel", delegate
+                    {
+                        alertDialog.Dispose();
+                    });
+                    alertDialog.Show();
+                }
+                else
+                {
+                    AlertDialog.Builder alert = new AlertDialog.Builder(context);
+                    alert.SetTitle(Resource.String.connection_title)
+                            .SetMessage(Resource.String.connection_message)
+                            .Show();
+                }
+        }
+
+        public override void OnChildDrawOver(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, bool isCurrentlyActive)
         {
             base.OnChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
             View itemView = viewHolder.ItemView;
             ColorDrawable background = new ColorDrawable(Xamarin.Forms.Color.FromHex("#BBDEFB").ToAndroid());
-            Drawable deleteIcon = ContextCompat.GetDrawable(Application.Context, Resource.Drawable.deletebin);
+            Drawable deleteIcon = ContextCompat.GetDrawable(context, Resource.Drawable.deletebin);
             int backgroundCornerOffset = 40; //so background is behind the rounded corners of itemView
             int backgroundHeightOffset = 30;
             int backgroundRightOffset = 30;
@@ -110,7 +107,6 @@ namespace Studid
             { // view is unSwiped
                 background.SetBounds(0, 0, 0, 0);
             }
-
             background.Draw(c);
             deleteIcon.Draw(c);
         }
