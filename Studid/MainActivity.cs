@@ -28,7 +28,8 @@ using Bumptech.Glide.Request.Transition;
 
 namespace Studid
 {
-    class NavigationActivity : AppCompatActivity
+    [Activity(Label = "MainActivity")]
+    class MainActivity : AppCompatActivity
     {
         private BottomNavigationView navigation;
         private FragmentFlashcards fragmentFlashcards = new FragmentFlashcards();
@@ -38,17 +39,13 @@ namespace Studid
         private String examName = "", examId;
         Date examDate;
         private int examCfu;
-        private String fileType = "application/pdf";
+        String fileType = "application/pdf";
 
         Fragment selectedFragment = null;
-        public override bool OnCreateOptionsMenu(IMenu menu)
-        {
-            MenuInflater.Inflate(Resource.Menu.top_app_bar, menu);
-            return base.OnCreateOptionsMenu(menu);
-        }
         protected void onCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
+            Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             SetContentView(Resource.Layout.activity_main);
             Bundle extras = Intent.Extras;
             if (extras != null)
@@ -69,6 +66,7 @@ namespace Studid
             }
             MaterialToolbar topAppBar = (MaterialToolbar)FindViewById(Resource.Id.topAppBar);
             SetSupportActionBar(topAppBar);
+            PropicTarget.setProPic(this, topAppBar);
             ActionBar.Title = examName;                   // appbar.Title lo prende
             ActionBar.SetDisplayHomeAsUpEnabled(true);    // appbar.setDisplayHomeAsUpEnabled non lo prende
             ImageButton addbtn = (ImageButton)FindViewById(Resource.Id.add_button_m);
@@ -76,14 +74,16 @@ namespace Studid
             MaterialTextView examDetailsTv = (MaterialTextView)FindViewById(Resource.Id.exam_detail_tv);
             DateFormat format = new SimpleDateFormat("dd/MMM/yy", Locale.Italy);
             examDetailsTv.Text = "Date: " + format.Format(examDate) + "\nCfu: " + examCfu;
-
-
             //handling the navigation between fragments
             navigation = (BottomNavigationView)FindViewById(Resource.Id.bottom_navigation);
             navigation.SetOnNavigationItemSelectedListener((BottomNavigationView.IOnNavigationItemSelectedListener)this);
             // OnNavigationItemSelected((IMenuItem)this); se si lascia questo si mette OnNavigationItemSelcted nell'OnCreate
         }   //chiusura OnCreate
-
+        public override bool OnCreateOptionsMenu(IMenu menu)
+        {
+            MenuInflater.Inflate(Resource.Menu.top_app_bar, menu);
+            return base.OnCreateOptionsMenu(menu);
+        }
         private void Addbtn_Click(object sender, EventArgs e)
         {
             if (isOnline(Application.Context))
@@ -109,27 +109,6 @@ namespace Studid
                 }
             }
         }
-
-        private void setProPic(IMenuItem item)
-        {
-            FirebaseUser user = FirebaseAuth.Instance.CurrentUser;
-
-            if (user != null)
-            {
-                Glide.With(this)
-                        .AsBitmap()
-                        .Load(user.PhotoUrl)
-                        .CenterCrop()
-                        .CircleCrop()
-                        .Into(new Target(item));
-            }
-            else
-            {
-                item.SetIcon(Resource.Drawable.ic_account_circle_light);
-            }
-        }
-
-
         private bool isOnline(Context context)
         {
             ConnectivityManager cm = (ConnectivityManager)context.GetSystemService(Context.ConnectivityService);
@@ -137,8 +116,6 @@ namespace Studid
             //should check null because in airplane mode it will be null
             return (netInfo != null && netInfo.IsConnected);
         }
-
-
         public bool OnNavigationItemSelected(IMenuItem item)
         {
             switch (item.ItemId)
@@ -166,8 +143,6 @@ namespace Studid
             }
             return true;
         }
-
-
         public override bool OnOptionsItemSelected(IMenuItem item)
         {
             if (item.ItemId == Resource.Id.action_login)
@@ -178,23 +153,6 @@ namespace Studid
                 return base.OnOptionsItemSelected(item);
             }
             return false;
-        }
-    }
-    class Target : CustomTarget
-    {
-        private IMenuItem item;
-        public Target(IMenuItem item)
-        {
-            this.item = item;
-        }
-        public override void OnLoadCleared(Drawable p0)
-        {
-
-        }
-
-        public override void OnResourceReady(Java.Lang.Object resource, ITransition transition)
-        {
-            item.SetIcon(new BitmapDrawable((Android.Content.Res.Resources)resource));
         }
     }
 }

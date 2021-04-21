@@ -14,15 +14,12 @@ namespace Studid.Adapter
     {
         public Context context;
         public RecyclerView RecyclerView;
-        public event EventHandler<ExamAdapterClickEventArgs> ItemClick;
+        public event EventHandler<ExamAdapterClickEventArgs> ExamSelectClick;
         public event EventHandler<ExamAdapterClickEventArgs> ItemLongClick;
-        public event EventHandler<ExamAdapterClickEventArgs> Exam_NameClick;
-        public event EventHandler<ExamAdapterClickEventArgs> Exam_DateClick;
-        public event EventHandler<ExamAdapterClickEventArgs> Exam_CfuClick;
+        public event EventHandler<ExamAdapterClickEventArgs> ExamNameClick;
+        public event EventHandler<ExamAdapterClickEventArgs> ExamDateClick;
+        public event EventHandler<ExamAdapterClickEventArgs> ExamCfuClick;
         public List<ExamModel> ExamList;
-        public Button cfuButton;
-        public ImageButton selectButton;
-        public TextView examNameTV, examDateTV;
         public ExamAdapter(Context context, RecyclerView recyclerView, List<ExamModel> Exams)
         {
             this.context = context;
@@ -38,7 +35,7 @@ namespace Studid.Adapter
         public override RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType)
         {
             View itemview = LayoutInflater.From(parent.Context).Inflate(Resource.Layout.examrow, parent, false);
-            var vh = new ExamViewHolder(itemview, OnClick, OnLongClick, OnExam_NameClick, OnExam_DateClick, OnExam_CfuClick);
+            var vh = new ExamViewHolder(itemview, OnExamSelectClick, OnLongClick, OnExamNameClick, OnExamDateClick, OnExamCfuClick);
             return vh;
         }
         public override void OnBindViewHolder(RecyclerView.ViewHolder viewHolder, int position)
@@ -56,23 +53,13 @@ namespace Studid.Adapter
             // holder.examNameTV.Click += ItemView_Click;
         }
 
-        /* private void ItemView_Click(object sender, EventArgs e)
-         {
-
-            int position = this.recyclerView.GetChildAdapterPosition((View)sender);
-            ExamModel examname_clicked = this.Items[position];
-            string examname = examname_clicked.get_exam_name();
-            DocumentReference docRef = GetDatabase().Collection("Exams").Document(examname);
-            docRef.Update("examname", "Update");
-        } */
-
         public override int ItemCount => ExamList.Count;
 
-        void OnClick(ExamAdapterClickEventArgs args) => ItemClick?.Invoke(this, args);
+        void OnExamSelectClick(ExamAdapterClickEventArgs args) => ExamSelectClick?.Invoke(this, args);
         void OnLongClick(ExamAdapterClickEventArgs args) => ItemLongClick?.Invoke(this, args);
-        void OnExam_NameClick(ExamAdapterClickEventArgs args) => Exam_NameClick?.Invoke(this, args);
-        void OnExam_DateClick(ExamAdapterClickEventArgs args) => Exam_DateClick?.Invoke(this, args);
-        void OnExam_CfuClick(ExamAdapterClickEventArgs args) => Exam_CfuClick?.Invoke(this, args);
+        void OnExamNameClick(ExamAdapterClickEventArgs args) => ExamNameClick?.Invoke(this, args);
+        void OnExamDateClick(ExamAdapterClickEventArgs args) => ExamDateClick?.Invoke(this, args);
+        void OnExamCfuClick(ExamAdapterClickEventArgs args) => ExamCfuClick?.Invoke(this, args);
         }
 
     public class ExamViewHolder : RecyclerView.ViewHolder
@@ -85,7 +72,7 @@ namespace Studid.Adapter
 
         public string examId;
 
-    public ExamViewHolder(View itemView, Action<ExamAdapterClickEventArgs> clickListener,
+    public ExamViewHolder(View itemView, Action<ExamAdapterClickEventArgs> selectClickListener,
                             Action<ExamAdapterClickEventArgs> longClickListener, Action<ExamAdapterClickEventArgs> nameClickListener, Action<ExamAdapterClickEventArgs> dateClickListener, Action<ExamAdapterClickEventArgs> cfuClickListener) : base(itemView)
         {
             //TextView = v;
@@ -97,20 +84,9 @@ namespace Studid.Adapter
             examNameTV.Click += (sender, e) => nameClickListener(new ExamAdapterClickEventArgs { View = itemView, Position = AdapterPosition });
             examDateTV.Click += (sender, e) => dateClickListener(new ExamAdapterClickEventArgs { View = itemView, Position = AdapterPosition });
             cfuButton.Click += (sender, e) => cfuClickListener(new ExamAdapterClickEventArgs { View = itemView, Position = AdapterPosition });
-        
-            itemView.Click += (sender, e) => clickListener(new ExamAdapterClickEventArgs { View = itemView, Position = AdapterPosition });
+            selectButton.Click += (sender, e) => selectClickListener(new ExamAdapterClickEventArgs { View = itemView, Position = AdapterPosition });
             itemView.LongClick += (sender, e) => longClickListener(new ExamAdapterClickEventArgs { View = itemView, Position = AdapterPosition });
-        
-
         }
-            /*  private void ExamNameTV_Click(object sender, ExamAdapterClickEventArgs e)
-              {
-
-                  ExamModel examname_clicked = this.Items[e.Position];
-                  string examname = examname_clicked.get_exam_name();
-                  DocumentReference docRef = GetDatabase().Collection("Exams").Document(examname);
-                  docRef.Update("examname", "Update");
-              } */
     }
 
     public class ExamAdapterClickEventArgs : EventArgs

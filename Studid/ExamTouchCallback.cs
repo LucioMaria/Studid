@@ -83,7 +83,8 @@ namespace Studid
         {
             base.OnChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
             View itemView = viewHolder.ItemView;
-            ColorDrawable background = new ColorDrawable(Xamarin.Forms.Color.FromHex("#BBDEFB").ToAndroid());
+            //ColorDrawable background = new ColorDrawable(Xamarin.Forms.Color.FromHex("#BBDEFB").ToAndroid());
+            ColorDrawable background = new ColorDrawable(new Color(ContextCompat.GetColor(context, Resource.Color.colorPrimarylight)));
             Drawable deleteIcon = ContextCompat.GetDrawable(context, Resource.Drawable.deletebin);
             int backgroundCornerOffset = 40; //so background is behind the rounded corners of itemView
             int backgroundHeightOffset = 30;

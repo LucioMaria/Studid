@@ -47,7 +47,7 @@ namespace Studid
         ExamAdapter adapter;
         MaterialToolbar topAppBar;
         private GoogleSignInClient mGoogleSignInClient;
-        AddExamDialog addExamFragment;
+        AddExamDialog addExamDialog;
         private bool isLoginAlerted = false;
 
         protected override void OnCreate(Bundle savedInstanceState)
@@ -68,7 +68,7 @@ namespace Studid
         public override bool OnCreateOptionsMenu(IMenu menu)
         {
             MenuInflater.Inflate(Resource.Menu.top_app_bar, menu);
-            setProPic();
+            PropicTarget.setProPic(this,topAppBar);
             return base.OnCreateOptionsMenu(menu);
         }
         public override bool OnOptionsItemSelected(IMenuItem item)
@@ -89,19 +89,19 @@ namespace Studid
                 alertLogin();
             }
             else {
-                addExamFragment = new AddExamDialog();
+                addExamDialog = new AddExamDialog();
                 var transaction = SupportFragmentManager.BeginTransaction();
-                addExamFragment.Show(transaction, "add exam");
+                addExamDialog.Show(transaction, "add exam");
             }
         }
         private void SetupRecyclerView()
         {
             rv.SetLayoutManager(new LinearLayoutManager(this));
             adapter = new ExamAdapter(this.ApplicationContext, rv);
-            adapter.ItemClick += Adapter_ItemClick;
-            adapter.Exam_NameClick += ExamNameTV_Click;
-            adapter.Exam_DateClick += Exam_DateClick;
-            adapter.Exam_CfuClick += Exam_CfuClick;
+            adapter.ExamSelectClick += ExamSelectClick;
+            adapter.ExamNameClick += ExamNameTVClick;
+            adapter.ExamDateClick += ExamDateClick;
+            adapter.ExamCfuClick += ExamCfuClick;
             rv.SetAdapter(adapter);
             ItemTouchHelper.SimpleCallback callback = new ExamTouchCallback(this);
             ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
@@ -112,7 +112,7 @@ namespace Studid
             base.OnWindowFocusChanged(hasFocus); 
             if (hasFocus)
             {
-                setProPic();
+                PropicTarget.setProPic(this, topAppBar);
                 FirebaseUser user = FirebaseAuth.Instance.CurrentUser;
                 if (user != null)
                 {
@@ -176,11 +176,11 @@ namespace Studid
                 }
             }
         }
-        private void Adapter_ItemClick(object sender, ExamAdapterClickEventArgs e)
+        private void ExamSelectClick(object sender, ExamAdapterClickEventArgs e)
         {
-            if (mGoogleSignInClient != null)
+            if (FirebaseAuth.Instance.CurrentUser != null)
             {
-                Intent intentExamName = new Intent(this, typeof(NavigationActivity));
+                Intent intentExamName = new Intent(this,typeof(MainActivity));
                 intentExamName.PutExtra("exam_name", adapter.ExamList[e.Position].examName);
                 intentExamName.PutExtra("exam_id", adapter.ExamList[e.Position].examId);
                 intentExamName.PutExtra("exam_date", adapter.ExamList[e.Position].date.ToString());
@@ -190,7 +190,7 @@ namespace Studid
             }
         }
 
-        private void Exam_CfuClick(object sender, ExamAdapterClickEventArgs e)
+        private void ExamCfuClick(object sender, ExamAdapterClickEventArgs e)
         {
             
             FirebaseUser user = FirebaseAuth.Instance.CurrentUser;
@@ -229,7 +229,7 @@ namespace Studid
             }
         }
 
-        private void Exam_DateClick(object sender, ExamAdapterClickEventArgs e)
+        private void ExamDateClick(object sender, ExamAdapterClickEventArgs e)
         {
             FirebaseUser user = FirebaseAuth.Instance.CurrentUser;
             if (user == null)
@@ -274,7 +274,7 @@ namespace Studid
                 }
             }
         }
-        private void ExamNameTV_Click(object sender, ExamAdapterClickEventArgs e)
+        private void ExamNameTVClick(object sender, ExamAdapterClickEventArgs e)
         {
             FirebaseUser user = FirebaseAuth.Instance.CurrentUser;
             if (user == null)
@@ -329,25 +329,6 @@ namespace Studid
                 };
             }           
         }
-
-        private void setProPic()
-        {
-            FirebaseUser user = FirebaseAuth.Instance.CurrentUser;
-
-            if (user != null)
-            {
-                Glide.With(this)
-                        .AsBitmap()
-                        .Load(user.PhotoUrl)
-                        .CenterCrop()
-                        .CircleCrop()
-                        .Into(new MyTarget(topAppBar.Menu.GetItem(0)));
-            }
-            else
-            {
-                topAppBar.Menu.GetItem(0).SetIcon(Resource.Drawable.ic_account_circle_light);
-            }
-        }
         bool IsSameName(string examNewName)
         {
             foreach (ExamModel exam in adapter.ExamList)
@@ -376,24 +357,6 @@ namespace Studid
                 alert.Dispose();
             });
             alert.Show();           
-        }
-    }
-
-    class MyTarget : CustomTarget
-    {
-        private IMenuItem item;
-        public MyTarget(IMenuItem item)
-        {
-            this.item = item;
-        }
-        public override void OnLoadCleared(Drawable p0)
-        {
-
-        }
-
-        public override void OnResourceReady(Java.Lang.Object resource, ITransition transition)
-        {
-            item.SetIcon(new BitmapDrawable(resource as Bitmap));
         }
     }
 }
