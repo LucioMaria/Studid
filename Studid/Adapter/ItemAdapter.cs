@@ -19,7 +19,7 @@ namespace Studid.Adapter
         public event EventHandler<ItemAdapterClickEventArgs> ItemUpdate_NameClick;
         public event EventHandler<ItemAdapterClickEventArgs> Item_CheckClick;
         public event EventHandler<ItemAdapterClickEventArgs> Item_SelectClick;
-        public List<ItemModel> Items;
+        public List<ItemModel> ItemList;
         public TextView textView, chekedText;
         public CheckBox check;
         public ImageButton selectItem;
@@ -28,7 +28,13 @@ namespace Studid.Adapter
         {
             this.context = context;
             RecyclerView = recyclerView;
-            Items = ExamItems;
+            ItemList = ExamItems;
+        }
+        public ItemAdapter(Context context, RecyclerView recyclerView)
+        {
+            this.context = context;
+            RecyclerView = recyclerView;
+            ItemList = new List<ItemModel>();
         }
 
         // Create new views (invoked by the layout manager)
@@ -43,7 +49,7 @@ namespace Studid.Adapter
         // Replace the contents of a view (invoked by the layout manager)
         public override void OnBindViewHolder(RecyclerView.ViewHolder viewHolder, int position)
         {
-            var examitem = Items[position];
+            var examitem = ItemList[position];
             var holder = viewHolder as ItemViewHolder;
             // Replace the contents of the view with that element
             // var holder = viewHolder as ItemAdapterViewHolder;
@@ -62,7 +68,7 @@ namespace Studid.Adapter
             // holder.TextView.Text = items[position];
         }
 
-        public override int ItemCount => Items.Count;
+        public override int ItemCount => ItemList.Count;
 
         void OnClick(ItemAdapterClickEventArgs args) => ItemClick?.Invoke(this, args);
         void OnLongClick(ItemAdapterClickEventArgs args) => ItemLongClick?.Invoke(this, args);

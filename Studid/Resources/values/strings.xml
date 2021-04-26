@@ -27,6 +27,4 @@
 	<string name="connection_message">you need to be online to perform this action</string>
 	<string name="login_title">Login required</string>
 	<string name="dialog_name_update">Update the name</string>
-
-
 </resources>

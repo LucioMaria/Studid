@@ -180,10 +180,10 @@ namespace Studid
         {
             if (FirebaseAuth.Instance.CurrentUser != null)
             {
-                Intent intentExamName = new Intent(this,typeof(MainActivity));
+                Intent intentExamName = new Intent(this,typeof(ItemChooserActivity));
                 intentExamName.PutExtra("exam_name", adapter.ExamList[e.Position].examName);
                 intentExamName.PutExtra("exam_id", adapter.ExamList[e.Position].examId);
-                intentExamName.PutExtra("exam_date", adapter.ExamList[e.Position].date.ToString());
+                intentExamName.PutExtra("exam_date", adapter.ExamList[e.Position].date.ToDateTime().ToLongDateString());
                 intentExamName.PutExtra("exam_cfu", adapter.ExamList[e.Position].cfu);
                 StartActivity(intentExamName);
                 Log.Info("Onclick", "Click");
@@ -337,13 +337,6 @@ namespace Studid
                     return true;
             }
             return false;
-        }     
-        private bool isOnline(Context context)
-        {
-            ConnectivityManager cm = (ConnectivityManager)context.GetSystemService(Context.ConnectivityService);
-            NetworkInfo netInfo = cm.ActiveNetworkInfo;
-            //should check null because in airplane mode it will be null
-            return (netInfo != null && netInfo.IsConnected);
         }
         private void alertLogin()
         {

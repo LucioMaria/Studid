@@ -28,8 +28,8 @@ using Bumptech.Glide.Request.Transition;
 
 namespace Studid
 {
-    [Activity(Label = "MainActivity")]
-    class MainActivity : AppCompatActivity
+    [Activity(Label = "ItemChooserActivity")]
+    public class ItemChooserActivity : AppCompatActivity
     {
         private BottomNavigationView navigation;
         private FragmentFlashcards fragmentFlashcards = new FragmentFlashcards();
@@ -37,24 +37,24 @@ namespace Studid
         private FragmentCmaps fragmentCmaps = new FragmentCmaps();
         private FragmentExercises fragmentExercise = new FragmentExercises();
         private String examName = "", examId;
-        Date examDate;
+        private Date examDate;
         private int examCfu;
         String fileType = "application/pdf";
 
         Fragment selectedFragment = null;
-        protected void onCreate(Bundle savedInstanceState)
+        protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-            Xamarin.Essentials.Platform.Init(this, savedInstanceState);
-            SetContentView(Resource.Layout.activity_main);
+            SetContentView(Resource.Layout.activity_item_chooser);
+
             Bundle extras = Intent.Extras;
             if (extras != null)
             {
                 examName = extras.GetString("exam_name");
                 examId = extras.GetString("exam_id");
                 examCfu = extras.GetInt("exam_cfu");
-                examDate = new Date(extras.GetLong("exam_date"));
-                Bundle bundle = new Bundle();
+                examDate = new Date(extras.GetString("exam_date"));
+                Bundle bundle = new Bundle(); 
                 bundle.PutString("exam_name", examName);
                 bundle.PutString("exam_id", examId);
                 fragmentFlashcards.Arguments = bundle;
@@ -62,23 +62,24 @@ namespace Studid
                 fragmentCmaps.Arguments = bundle;
                 fragmentExercise.Arguments = bundle;
                 selectedFragment = fragmentFlashcards;
-                SupportFragmentManager.BeginTransaction().Replace(Resource.Id.fragment_container, fragmentFlashcards).Commit();
+                SupportFragmentManager.BeginTransaction().Replace(Resource.Id.item_fragment_container, fragmentFlashcards).Commit();
             }
             MaterialToolbar topAppBar = (MaterialToolbar)FindViewById(Resource.Id.topAppBar);
             SetSupportActionBar(topAppBar);
             PropicTarget.setProPic(this, topAppBar);
-            ActionBar.Title = examName;                   // appbar.Title lo prende
-            ActionBar.SetDisplayHomeAsUpEnabled(true);    // appbar.setDisplayHomeAsUpEnabled non lo prende
-            ImageButton addbtn = (ImageButton)FindViewById(Resource.Id.add_button_m);
+            SupportActionBar.Title = examName;                   
+            SupportActionBar.SetHomeButtonEnabled(true);
+            SupportActionBar.SetDisplayHomeAsUpEnabled(true); 
+            ImageButton addbtn = (ImageButton)FindViewById(Resource.Id.add_button_i);
             addbtn.Click += Addbtn_Click;
             MaterialTextView examDetailsTv = (MaterialTextView)FindViewById(Resource.Id.exam_detail_tv);
             DateFormat format = new SimpleDateFormat("dd/MMM/yy", Locale.Italy);
             examDetailsTv.Text = "Date: " + format.Format(examDate) + "\nCfu: " + examCfu;
             //handling the navigation between fragments
-            navigation = (BottomNavigationView)FindViewById(Resource.Id.bottom_navigation);
-            navigation.SetOnNavigationItemSelectedListener((BottomNavigationView.IOnNavigationItemSelectedListener)this);
+            navigation = (BottomNavigationView)FindViewById(Resource.Id.bottom_navigation_i);
+            navigation.NavigationItemSelected += Navigation_NavigationItemSelected;
             // OnNavigationItemSelected((IMenuItem)this); se si lascia questo si mette OnNavigationItemSelcted nell'OnCreate
-        }   //chiusura OnCreate
+        }
         public override bool OnCreateOptionsMenu(IMenu menu)
         {
             MenuInflater.Inflate(Resource.Menu.top_app_bar, menu);
@@ -86,16 +87,9 @@ namespace Studid
         }
         private void Addbtn_Click(object sender, EventArgs e)
         {
-            if (isOnline(Application.Context))
-            {
-                AddItemDialog addItemDialog = AddItemDialog.newInstance(fileType);
-                addItemDialog.SetTargetFragment(selectedFragment, 1);
-                addItemDialog.Show(SupportFragmentManager, "add_dialog");
-            }
-            else
-            {
-                Toast.MakeText(Application.Context, "you need to be online", ToastLength.Short).Show();
-            }
+            AddItemDialog addItemDialog = AddItemDialog.newInstance(fileType);
+            addItemDialog.SetTargetFragment(selectedFragment, 1);
+            addItemDialog.Show(SupportFragmentManager, "add_dialog");
         }
 
         public void onWindowFocusChanged(bool hasFocus)
@@ -116,43 +110,48 @@ namespace Studid
             //should check null because in airplane mode it will be null
             return (netInfo != null && netInfo.IsConnected);
         }
-        public bool OnNavigationItemSelected(IMenuItem item)
+        private void Navigation_NavigationItemSelected(object sender, BottomNavigationView.NavigationItemSelectedEventArgs e)            
         {
-            switch (item.ItemId)
+            switch (e.Item.ItemId)
             {
                 case Resource.Id.botmenu_recordings:
-                    selectedFragment = fragmentRecordings;
-                    fileType = "audio/*";
+                    //selectedFragment = fragmentRecordings;
+                    //fileType = "audio/*";
                     break;
                 case Resource.Id.botmenu_cmaps:
-                    selectedFragment = fragmentCmaps;
-                    fileType = "image/*";
+                    //selectedFragment = fragmentCmaps;
+                    //fileType = "image/*";
                     break;
                 case Resource.Id.botmenu_exercise:
-                    selectedFragment = fragmentExercise;
-                    fileType = "application/pdf";
+                    //selectedFragment = fragmentExercise;
+                    //fileType = "application/pdf";
                     break;
                 default:
-                    selectedFragment = fragmentFlashcards;
-                    fileType = "application/pdf";
+                    //selectedFragment = fragmentFlashcards;
+                    //fileType = "application/pdf";
                     break;
             }
             if (selectedFragment != null)
             {
-                SupportFragmentManager.BeginTransaction().Replace(Resource.Id.fragment_container, selectedFragment).Commit();
+                SupportFragmentManager.BeginTransaction().Replace(Resource.Id.item_fragment_container, selectedFragment).Commit();
             }
-            return true;
         }
         public override bool OnOptionsItemSelected(IMenuItem item)
         {
-            if (item.ItemId == Resource.Id.action_login)
-            {
+            if  (item.ItemId==Resource.Id.action_login)
+            { 
                 LoginDialog loginDialog = new LoginDialog();
                 var transaction = SupportFragmentManager.BeginTransaction();
                 loginDialog.Show(transaction, "login_dialog");
-                return base.OnOptionsItemSelected(item);
+                return true;
             }
-            return false;
+            else if (item.ItemId == Android.Resource.Id.Home)
+            {
+                Finish();
+                return true;
+            }
+            return base.OnOptionsItemSelected(item);
         }
     }
+
 }

@@ -5,14 +5,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:theme="@style/AppTheme"
-    tools:context=".MainActivity">
+    tools:context=".ExamChooserActivity"
+    android:theme="@style/AppTheme">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
             android:layout_height="140dp"
@@ -21,17 +20,16 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
             app:expandedTitleTextAppearance="@style/TextAppearance.App.CollapsingToolbar.Expanded"
             app:collapsedTitleTextAppearance="@style/TextAppearance.App.CollapsingToolbar.Collapsed">
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/exam_detail_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:layout_gravity="center_horizontal|top"
-                style="@style/TextAppearance.App.CollapsingToolbar.Collapsed"
+            <ImageView
+                app:expandedTitleGravity="center_horizontal"
+                android:id="@+id/logo"
+                android:layout_width="269dp"
+                android:layout_height="73dp"
+                android:src="@drawable/logo"
+                android:layout_gravity="center_horizontal"
                 app:layout_collapseMode="parallax"
                 app:layout_collapseParallaxMultiplier="-1"
-                />
+                android:backgroundTint="@color/transparent"/>
             <com.google.android.material.appbar.MaterialToolbar
                 app:layout_collapseMode="pin"
                 android:id="@+id/topAppBar"
@@ -40,35 +38,43 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:menu="@menu/top_app_bar"
+                app:title="@string/app_name"
                 android:background="@android:color/transparent"/>
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
+    </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
-
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fragment_container"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recicler_view_exams"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_navigation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:menu="@menu/bottomnav_menu"
-        android:layout_gravity="bottom"/>
+        android:clipToPadding="false"
+        android:paddingBottom="100dp" />
 
     <androidx.appcompat.widget.AppCompatImageButton
-        android:id="@+id/add_button_m"
+        android:id="@+id/add_button_exam"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="70dp"
+        android:layout_marginBottom="16dp"
         android:background="@drawable/button_roundshape_accent"
         android:elevation="2dp"
         android:src="@drawable/ic_add_black_24dp"
         android:tint="@color/colorIcons"
-        app:layout_anchor="@+id/fragment_container"
-        app:layout_anchorGravity="end|bottom" />
+        app:layout_anchor="@+id/recicler_view_exams"
+        app:layout_anchorGravity="end|bottom"
+        android:tooltipText="Add a new exam"/>
+
+    <ImageView
+        android:id="@+id/empty_recycler_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_add_document_icon"
+        app:tint="@color/colorPrimarylight"
+        android:visibility="invisible"
+        app:layout_anchor="@+id/recicler_view_exams"
+        app:layout_anchorGravity="center"
+        />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
+

@@ -30,10 +30,9 @@ namespace Studid.Fragments
         private static System.String STORAGE_FOLDER = "Flashcards";
         private System.String examname, examId;
         private RecyclerView recyclerView;
-        private ItemAdapter adapterItem;
+        private ItemAdapter itemAdapter;
         private ContentLoadingProgressBar progressIndicator;
         private FirebaseUser user;
-        List<ItemModel> ItemList = new List<ItemModel>();
         public override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
@@ -58,26 +57,20 @@ namespace Studid.Fragments
             {
                 UpdateUI(recyclerView, view);
             }
-            ItemTouchHelper.Callback callback = new MyItemTouchHelper(STORAGE_FOLDER, examname);
-            ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
-            itemTouchHelper.AttachToRecyclerView(recyclerView);
-
-
-
-
-            //return base.OnCreateView(inflater, container, savedInstanceState);
-
+            //ItemTouchHelper.Callback callback = new MyItemTouchHelper(STORAGE_FOLDER, examname);
+            //ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
+            //itemTouchHelper.AttachToRecyclerView(recyclerView);
             return view;
         }
 
         private void SetupRecyclerView()
         {
             recyclerView.SetLayoutManager(new LinearLayoutManager(Application.Context));
-            adapterItem = new ItemAdapter(Application.Context, recyclerView, ItemList);
-            adapterItem.ItemUpdate_NameClick += AdapterItem_ItemUpdate_NameClick;
-            adapterItem.Item_CheckClick += AdapterItem_Item_CheckClick;
-            adapterItem.Item_SelectClick += AdapterItem_Item_SelectClick;
-            recyclerView.SetAdapter(adapterItem);
+            itemAdapter = new ItemAdapter(Application.Context, recyclerView);
+            itemAdapter.ItemUpdate_NameClick += AdapterItem_ItemUpdate_NameClick;
+            itemAdapter.Item_CheckClick += AdapterItem_Item_CheckClick;
+            itemAdapter.Item_SelectClick += AdapterItem_Item_SelectClick;
+            recyclerView.SetAdapter(itemAdapter);
         }
 
         private void AdapterItem_Item_SelectClick(object sender, ItemAdapterClickEventArgs e)
@@ -88,14 +81,14 @@ namespace Studid.Fragments
         private async void AdapterItem_Item_CheckClick(object sender, ItemAdapterClickEventArgs e)
         {
             FirebaseUser user = FirebaseAuth.Instance.CurrentUser;
-            ItemModel itemcheck_clicked = this.ItemList[e.Position];
+            ItemModel itemcheck_clicked = itemAdapter.ItemList[e.Position];
             string itemcheck = itemcheck_clicked.itemName;
             DocumentReference ItemToUpdate = (DocumentReference)await CrossCloudFirestore.Current
                         .Instance
                         .Collection("Users")
                         .Document(CrossFirebaseAuth.Current.Instance.CurrentUser.Uid)
                         .Collection("Exams")
-                        .Document(examname)
+                        .Document(examId)
                         .Collection(STORAGE_FOLDER)
                         .Document(itemcheck)
                         .GetAsync();
@@ -113,7 +106,7 @@ namespace Studid.Fragments
         private void AdapterItem_ItemUpdate_NameClick(object sender, ItemAdapterClickEventArgs e)
         {
             FirebaseUser user = FirebaseAuth.Instance.CurrentUser;
-            ItemModel itemname_clicked = this.ItemList[e.Position];
+            ItemModel itemname_clicked = itemAdapter.ItemList[e.Position];
             string itemname = itemname_clicked.itemName;
             Dialog nameDialog = new Dialog(Application.Context);
             nameDialog.SetContentView(Resource.Layout.dialog_name_update);
@@ -175,18 +168,6 @@ namespace Studid.Fragments
                                     .Collection("Exams")
                                     .Document(itemname)
                                     .DeleteAsync();
-
-
-
-                        /*    Google.Cloud.Firestore.CollectionReference exams = database.Collection("Exams");
-                              Google.Cloud.Firestore.DocumentReference examDoc = exams.Document(examname);
-                              Google.Cloud.Firestore.DocumentSnapshot snapshot = await examDoc.GetSnapshotAsync();
-                              if (snapshot.Exists)
-                              {
-                                  await exams.Document(examNameNew).SetAsync(snapshot);
-                                  await examDoc.DeleteAsync();
-                              }
-                         */
                     }
                     nameDialog.Dismiss();
                 }
@@ -200,7 +181,7 @@ namespace Studid.Fragments
 
         bool IsSameName(string itemNewName)
         {
-            foreach (ItemModel item in ItemList)
+            foreach (ItemModel item in itemAdapter.ItemList)
             {
                 if (item.itemName.Equals(itemNewName))
                     return true;
@@ -216,7 +197,7 @@ namespace Studid.Fragments
                                .Collection("Users")
                                .Document(CrossFirebaseAuth.Current.Instance.CurrentUser.Uid)
                                .Collection("Exams")
-                               .Document(examname)
+                               .Document(examId)
                                .Collection(STORAGE_FOLDER)
                                .AddSnapshotListener((snapshot, error) =>
                                {
@@ -224,24 +205,29 @@ namespace Studid.Fragments
                                    {
                                        foreach (var documentChange in snapshot.DocumentChanges)
                                        {
+                                           var newItem = documentChange.Document.ToObject<ItemModel>();
+                                           var i = itemAdapter.ItemList.FindIndex(x => x.Equals(newItem));
                                            switch (documentChange.Type)
                                            {
                                                case DocumentChangeType.Added:
-                                                   ItemList.Add(documentChange.Document.ToObject<ItemModel>());
+                                                   if (i == -1)
+                                                   {
+                                                       itemAdapter.ItemList.Add(newItem);
+                                                       itemAdapter.NotifyItemInserted(itemAdapter.ItemCount - 1);
+                                                   }
+                                                   else
+                                                       itemAdapter.NotifyDataSetChanged();
                                                    break;
                                                case DocumentChangeType.Removed:
-                                                   ItemList.Remove(documentChange.Document.ToObject<ItemModel>());
+                                                   itemAdapter.ItemList.Remove(newItem);
+                                                   itemAdapter.NotifyItemRemoved(i);
                                                    break;
                                                case DocumentChangeType.Modified:
-                                                   var em = documentChange.Document.ToObject<ItemModel>();
-                                                   var index = ItemList.FindIndex(x => x.itemName.Equals(em.itemName));
-                                                   ItemList.Remove(em);
-                                                   ItemList.Insert(index, em);
+                                                   itemAdapter.ItemList[i] = newItem;
+                                                   itemAdapter.NotifyItemChanged(i);
                                                    break;
                                            }
-                                           ItemList.Sort();
-                                           adapterItem.NotifyDataSetChanged();
-                                           if (adapterItem.ItemCount == 0)
+                                           if (itemAdapter.ItemCount == 0)
                                            {
                                                imageView.Visibility = ViewStates.Visible;
                                                recyclerView.Visibility = ViewStates.Invisible;

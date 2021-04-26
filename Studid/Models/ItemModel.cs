@@ -33,7 +33,7 @@ namespace Studid.Models
             if (obj is ItemModel)
             {
                 ItemModel model = (ItemModel)obj;
-                return this.itemName.Equals(model.itemName);
+                return this.itemId.Equals(model.itemId);
             }
             throw new Exception();
         }

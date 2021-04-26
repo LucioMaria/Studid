@@ -75,6 +75,7 @@
     <Reference Include="System.Numerics.Vectors" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ItemChooserActivity.cs" />
     <Compile Include="Adapter\ExamAdapter.cs" />
     <Compile Include="Adapter\ItemAdapter.cs" />
     <Compile Include="PropicTarget.cs" />
@@ -86,7 +87,6 @@
     <Compile Include="Fragments\FragmentExercises.cs" />
     <Compile Include="Fragments\FragmentFlashcards.cs" />
     <Compile Include="Fragments\FragmentRecordings.cs" />
-    <Compile Include="MainActivity.cs" />
     <Compile Include="Models\ExamModel.cs" />
     <Compile Include="Models\ItemModel.cs" />
     <Compile Include="Models\UserModel.cs" />
@@ -103,9 +103,6 @@
     <None Include="Assets\AboutAssets.txt" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout\activity_main.axml">
-      <SubType>Designer</SubType>
-    </AndroidResource>
     <AndroidResource Include="Resources\values\colors.xml" />
     <AndroidResource Include="Resources\values\ic_launcher_background.xml" />
     <AndroidResource Include="Resources\values\strings.xml" />
@@ -184,7 +181,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout\activity_exam_chooser.axml">
+    <AndroidResource Include="Resources\layout\activity_exam_chooser.xml">
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>
@@ -310,6 +307,16 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\xml\provider_paths.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\layout1.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\activity_item_chooser.xml">
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>
