@@ -66,7 +66,6 @@ namespace Studid
             }
             MaterialToolbar topAppBar = (MaterialToolbar)FindViewById(Resource.Id.topAppBar);
             SetSupportActionBar(topAppBar);
-            PropicTarget.setProPic(this, topAppBar);
             SupportActionBar.Title = examName;                   
             SupportActionBar.SetHomeButtonEnabled(true);
             SupportActionBar.SetDisplayHomeAsUpEnabled(true); 
@@ -75,6 +74,7 @@ namespace Studid
             MaterialTextView examDetailsTv = (MaterialTextView)FindViewById(Resource.Id.exam_detail_tv);
             DateFormat format = new SimpleDateFormat("dd/MMM/yy", Locale.Italy);
             examDetailsTv.Text = "Date: " + format.Format(examDate) + "\nCfu: " + examCfu;
+            PropicTarget.setProPic(this, topAppBar);
             //handling the navigation between fragments
             navigation = (BottomNavigationView)FindViewById(Resource.Id.bottom_navigation_i);
             navigation.NavigationItemSelected += Navigation_NavigationItemSelected;
@@ -87,9 +87,12 @@ namespace Studid
         }
         private void Addbtn_Click(object sender, EventArgs e)
         {
-            AddItemDialog addItemDialog = AddItemDialog.newInstance(fileType);
-            addItemDialog.SetTargetFragment(selectedFragment, 1);
-            addItemDialog.Show(SupportFragmentManager, "add_dialog");
+            if (isOnline(this))
+            {
+                AddItemDialog addItemDialog = AddItemDialog.newInstance(fileType);
+                addItemDialog.SetTargetFragment(selectedFragment, 1);
+                addItemDialog.Show(SupportFragmentManager, "add_dialog");
+            }
         }
 
         public void onWindowFocusChanged(bool hasFocus)
@@ -99,7 +102,7 @@ namespace Studid
             {
                 if (FirebaseAuth.Instance.CurrentUser == null)
                 {
-                    this.Finish();
+                   Finish();
                 }
             }
         }

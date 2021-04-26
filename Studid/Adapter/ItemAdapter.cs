@@ -54,7 +54,7 @@ namespace Studid.Adapter
             // Replace the contents of the view with that element
             // var holder = viewHolder as ItemAdapterViewHolder;
             holder.textView.Text = examitem.itemName;
-            holder.check.Checked = examitem.IsMemorized;
+            holder.check.Checked = examitem.isMemorized;
             if (holder.check.Checked)
             {
                 holder.chekedText.Visibility = ViewStates.Visible;

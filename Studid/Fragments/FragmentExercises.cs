@@ -98,7 +98,7 @@ namespace Studid.Fragments
                         .Collection(STORAGE_FOLDER)
                         .Document(itemcheck)
                         .GetAsync();
-            if (itemcheck_clicked.IsMemorized)
+            if (itemcheck_clicked.isMemorized)
             {
                 ItemToUpdate.Update("memorized", false);
             }

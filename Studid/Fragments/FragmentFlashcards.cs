@@ -14,7 +14,9 @@ using Google.Android.Material.TextField;
 using Java.IO;
 using Plugin.CloudFirestore;
 using Plugin.FirebaseAuth;
+using Plugin.FirebaseStorage;
 using Studid.Adapter;
+using Studid.Dialogs;
 using Studid.Models;
 using System;
 using System.Collections.Generic;
@@ -24,11 +26,11 @@ using Fragment = AndroidX.Fragment.App.Fragment;
 
 namespace Studid.Fragments
 {
-    public class FragmentFlashcards : Fragment
+    public class FragmentFlashcards : Fragment, AddItemDialog.OnInputSelected
     {
         private static System.String FILE_TYPE = "application/pdf";
         private static System.String STORAGE_FOLDER = "Flashcards";
-        private System.String examname, examId;
+        private String examname, examId;
         private RecyclerView recyclerView;
         private ItemAdapter itemAdapter;
         private ContentLoadingProgressBar progressIndicator;
@@ -42,15 +44,11 @@ namespace Studid.Fragments
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
-            // Use this to return your custom view for this Fragment
-            //return inflater.Inflate(Resource.Layout.YourFragment, container, false);
             View view = inflater.Inflate(Resource.Layout.fragment_items, container, false);
             progressIndicator = (ContentLoadingProgressBar)view.FindViewById(Resource.Id.progressIndicator);
             recyclerView = (RecyclerView)view.FindViewById(Resource.Id.recicler_view);
             recyclerView.SetLayoutManager(new LinearLayoutManager(this.Context));
             SetupRecyclerView();
-            // Drawable deleteIcon = ContextCompat.GetDrawable(this.Context, Resource.Drawable.deletebin);
-            // Color background = new Color(ContextCompat.GetColor(this.Context, Resource.Color.colorPrimaryDark));
             File storagePath = new File(this.Activity.GetExternalFilesDir(Android.OS.Environment.DirectoryDocuments), examname + "/" + STORAGE_FOLDER);
             user = FirebaseAuth.Instance.CurrentUser;
             if (user != null)
@@ -82,7 +80,6 @@ namespace Studid.Fragments
         {
             FirebaseUser user = FirebaseAuth.Instance.CurrentUser;
             ItemModel itemcheck_clicked = itemAdapter.ItemList[e.Position];
-            string itemcheck = itemcheck_clicked.itemName;
             DocumentReference ItemToUpdate = (DocumentReference)await CrossCloudFirestore.Current
                         .Instance
                         .Collection("Users")
@@ -90,9 +87,9 @@ namespace Studid.Fragments
                         .Collection("Exams")
                         .Document(examId)
                         .Collection(STORAGE_FOLDER)
-                        .Document(itemcheck)
+                        .Document(itemcheck_clicked.itemId)
                         .GetAsync();
-            if (itemcheck_clicked.IsMemorized)
+            if (itemcheck_clicked.isMemorized)
             {
                 ItemToUpdate.Update("memorized", false);
             }
@@ -140,35 +137,15 @@ namespace Studid.Fragments
                 }
                 else
                 {
-                    var document = await CrossCloudFirestore.Current
+                    await CrossCloudFirestore.Current
                     .Instance
                     .Collection("Users")
                     .Document(CrossFirebaseAuth.Current.Instance.CurrentUser.Uid)
                     .Collection("Exams")
-                    .Document(itemname)
+                    .Document(examId)
                     .Collection(STORAGE_FOLDER)
-                    .GetAsync();
-                    if (!(document.IsEmpty))
-                    {
-                        ItemModel itemmodel = (ItemModel)document.ToObjects<ItemModel>();
-                        itemmodel.itemName = itemNameNew;
-
-                        await CrossCloudFirestore.Current
-                                    .Instance
-                                    .Collection("Users")
-                                    .Document(CrossFirebaseAuth.Current.Instance.CurrentUser.Uid)
-                                    .Collection("Exams")
-                                    .Document(itemNameNew)
-                                    .SetAsync(itemmodel);
-
-                        await CrossCloudFirestore.Current
-                                    .Instance
-                                    .Collection("Users")
-                                    .Document(CrossFirebaseAuth.Current.Instance.CurrentUser.Uid)
-                                    .Collection("Exams")
-                                    .Document(itemname)
-                                    .DeleteAsync();
-                    }
+                    .Document(itemname_clicked.itemId)
+                    .UpdateAsync("itemName", itemNameNew);
                     nameDialog.Dismiss();
                 }
             };
@@ -240,9 +217,39 @@ namespace Studid.Fragments
                                        }
                                    }
                                });
-
         }
-
+        public async void sendInput(string filename, Android.Net.Uri fileuri)
+        {
+            if (user != null && isOnline(this.Context))
+            {
+                String itemId = Guid.NewGuid().ToString();
+                var storageReference = CrossFirebaseStorage.Current.Instance.RootReference.Child(user.Uid + "/" + examId + "/" + STORAGE_FOLDER + "/" + itemId);
+                //var uploadProgress = new Progress<IUploadState>();
+                //uploadProgress.ProgressChanged += (sender, e) =>
+                //{
+                //    progressIndicator.Show();
+                //    progressIndicator.Max=(int)e.TotalByteCount;
+                //    progressIndicator.Progress =(int)e.BytesTransferred;
+                //    var progress = e.TotalByteCount > 0 ? 100.0 * e.BytesTransferred / e.TotalByteCount : 0;
+                //    if (progress == 100)
+                //    {
+                //        CrossCloudFirestore.Current.Instance
+                //            .Collection("Users").Document(user.Uid)
+                //            .Collection("Exams").Document(examname)
+                //            .Collection(STORAGE_FOLDER).Document(itemId)
+                //            .SetAsync(new ItemModel(itemId, filename));
+                //    }
+                //};
+                //await storageReference.PutFileAsync(fileuri.Path, progress: uploadProgress);
+                await storageReference.PutFileAsync(fileuri.Path);
+            } else
+            {
+                AlertDialog.Builder alert = new AlertDialog.Builder(this.Context);
+                alert.SetTitle("Login and connection reqired")
+                        .SetMessage("you need to be online and logged in to perform this action");
+                alert.Show();
+            }
+        }
 
         //launching intent for file opening
         private void fileOpener(File file)

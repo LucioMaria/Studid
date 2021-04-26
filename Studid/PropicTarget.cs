@@ -4,6 +4,7 @@ using Android.Graphics;
 using Android.Graphics.Drawables;
 using Android.OS;
 using Android.Runtime;
+using Android.Util;
 using Android.Views;
 using Android.Widget;
 using Bumptech.Glide;
@@ -38,20 +39,24 @@ namespace Studid
         public static void setProPic(Context context, MaterialToolbar topAppBar)
         {
             FirebaseUser user = FirebaseAuth.Instance.CurrentUser;
-
-            if (user != null)
+            var menuItem = topAppBar.Menu.FindItem(Resource.Id.action_login);
+            if (menuItem != null)
             {
-                Glide.With(context)
-                        .AsBitmap()
-                        .Load(user.PhotoUrl)
-                        .CenterCrop()
-                        .CircleCrop()
-                        .Into(new PropicTarget(topAppBar.Menu.GetItem(0)));
-            }
-            else
-            {
-                topAppBar.Menu.GetItem(0).SetIcon(Resource.Drawable.ic_account_circle_light);
-            }
+                if (user != null)
+                {
+                    Glide.With(context)
+                            .AsBitmap()
+                            .Load(user.PhotoUrl)
+                            .CenterCrop()
+                            .CircleCrop()
+                            .Into(new PropicTarget(menuItem));
+                }
+                else
+                {
+                    menuItem.SetIcon(Resource.Drawable.ic_account_circle_light);
+                }
+            }else
+                Log.Error("setPropic", "unable to find menu item");
         }
     }
 }

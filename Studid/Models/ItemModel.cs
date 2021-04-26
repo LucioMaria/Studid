@@ -14,6 +14,13 @@ namespace Studid.Models
 {
     class ItemModel : IComparable
     {
+        public ItemModel(string itemId, string itemName)
+        {
+            this.itemId = itemId;
+            this.itemName = itemName;
+            this.isMemorized = false;
+        }
+
         [Id]
         public string itemId { get; set; }
 
@@ -21,7 +28,7 @@ namespace Studid.Models
         public string itemName { get; set; }
         
         [MapTo("isMemorized")]
-        public bool IsMemorized { get; set; }
+        public bool isMemorized { get; set; }
         public int CompareTo(object obj)
         {
             var em = obj as ItemModel;
