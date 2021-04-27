@@ -89,7 +89,6 @@
     <Compile Include="Fragments\FragmentRecordings.cs" />
     <Compile Include="Models\ExamModel.cs" />
     <Compile Include="Models\ItemModel.cs" />
-    <Compile Include="Models\UserModel.cs" />
     <Compile Include="MyItemTouchHelper.cs" />
     <Compile Include="ExamTouchCallback.cs" />
     <Compile Include="Resources\Resource.designer.cs" />

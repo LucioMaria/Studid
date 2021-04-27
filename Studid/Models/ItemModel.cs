@@ -14,6 +14,7 @@ namespace Studid.Models
 {
     class ItemModel : IComparable
     {
+        public ItemModel() { }
         public ItemModel(string itemId, string itemName)
         {
             this.itemId = itemId;

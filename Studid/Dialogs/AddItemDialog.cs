@@ -14,6 +14,7 @@ using Java.Lang;
 using String = System.String;
 using Android.Provider;
 using Android.Util;
+using Xamarin.Essentials;
 
 namespace Studid.Dialogs
 {
@@ -23,7 +24,7 @@ namespace Studid.Dialogs
         private TextView fileuriTV;
         private EditText filenameET;
         private Intent searchfile;
-        private Android.Net.Uri fileUri;
+        private string fileUri;
         private String argValue;
         private OnInputSelected onInputSelected;
         public override void OnCreate(Bundle savedInstanceState)
@@ -54,24 +55,24 @@ namespace Studid.Dialogs
             return view;
         }
 
-        public override async void OnActivityResult(int requestCode, int resultCode, Intent data)
-        {
-            base.OnActivityResult(requestCode, resultCode, data);
-            if (requestCode == 21 && resultCode == (int)Result.Ok) // non so s'è corretto col cast int, senza non funziona
-            {
-                fileUri = data.Data;
-                fileuriTV.Text = (fileUri.Path + "");
-                ContentResolver contentResolver = Activity.ContentResolver;
-                contentResolver.TakePersistableUriPermission(fileUri,
-                        ActivityFlags.GrantReadUriPermission);
-                Android.Database.ICursor returnCursor = contentResolver.Query(fileUri,
-                        null, null, null, null);
-                int nameIndex = returnCursor.GetColumnIndex(OpenableColumns.DisplayName);
-                returnCursor.MoveToFirst();
-                if (filenameET.Text + "".Trim() == "")
-                    filenameET.Text = returnCursor.GetString(nameIndex);
-            }
-        }
+        //public override async void OnActivityResult(int requestCode, int resultCode, Intent data)
+        //{
+        //    base.OnActivityResult(requestCode, resultCode, data);
+        //    if (requestCode == 21 && resultCode == (int)Result.Ok)
+        //    {
+        //        fileUri = data.Data.;
+        //        fileuriTV.Text = (fileUri.Path + "");
+        //        ContentResolver contentResolver = Activity.ContentResolver;
+        //        contentResolver.TakePersistableUriPermission(fileUri,
+        //                ActivityFlags.GrantReadUriPermission);
+        //        Android.Database.ICursor returnCursor = contentResolver.Query(fileUri,
+        //                null, null, null, null);
+        //        int nameIndex = returnCursor.GetColumnIndex(OpenableColumns.DisplayName);
+        //        returnCursor.MoveToFirst();
+        //        if (filenameET.Text + "".Trim() == "")
+        //            filenameET.Text = returnCursor.GetString(nameIndex);
+        //    }
+        //}
 
         private void ActionCancel_Click(object sender, EventArgs e)
         {
@@ -79,7 +80,7 @@ namespace Studid.Dialogs
         }
 
         private void ActionOk_Click(object sender, EventArgs e)
-        {
+        {   //need to implement the correct layout for names
             if (filenameET.Text + "".Trim() == "")
             {
                 Toast.MakeText(this.Context, Resource.String.empty_name_field, ToastLength.Short).Show();
@@ -100,13 +101,26 @@ namespace Studid.Dialogs
             }
         }
 
-        private void ActionSearch_Click(object sender, EventArgs e)
+        private async void ActionSearch_Click(object sender, EventArgs e)
         {
-            searchfile = new Intent(Intent.ActionOpenDocument);
-            searchfile.SetType(argValue);
-            searchfile.AddFlags(ActivityFlags.GrantReadUriPermission);
-            searchfile.AddFlags(ActivityFlags.GrantWriteUriPermission);
-            StartActivityForResult(searchfile, 21);
+            //searchfile = new Intent(Intent.ActionOpenDocument);
+            //searchfile.SetType(argValue);
+            //searchfile.AddFlags(ActivityFlags.GrantReadUriPermission);
+            //searchfile.AddFlags(ActivityFlags.GrantWriteUriPermission);
+            //StartActivityForResult(searchfile, 21);
+            var customFileType =
+                new FilePickerFileType(new Dictionary<DevicePlatform, IEnumerable<string>>
+                {
+                    { DevicePlatform.Android, new[] { argValue } },
+                });
+            var options = new PickOptions
+            {
+                PickerTitle = "Please select a comic file",
+                FileTypes = customFileType,
+            };
+            var result = await FilePicker.PickAsync(options);
+            fileUri = result.FullPath;
+            fileuriTV.Text = (result.FileName + "");
         }
         public override void OnAttach(Context context)
         {
@@ -132,7 +146,7 @@ namespace Studid.Dialogs
         //interface to override for getting the uri and the file name
         public interface OnInputSelected
         {
-            void sendInput(System.String filename, Android.Net.Uri fileuri);
+            void sendInput(System.String filename, string fileuri);
         }
     }
 }

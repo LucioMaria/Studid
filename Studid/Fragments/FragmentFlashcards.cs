@@ -53,7 +53,55 @@ namespace Studid.Fragments
             user = FirebaseAuth.Instance.CurrentUser;
             if (user != null)
             {
-                UpdateUI(recyclerView, view);
+                ImageView imageView = (ImageView)view.FindViewById(Resource.Id.empty_recycler_image);
+                CrossCloudFirestore.Current
+                                   .Instance
+                                   .Collection("Users")
+                                   .Document(CrossFirebaseAuth.Current.Instance.CurrentUser.Uid)
+                                   .Collection("Exams")
+                                   .Document(examId)
+                                   .Collection(STORAGE_FOLDER)
+                                   .AddSnapshotListener((snapshot, error) =>
+                                   {
+                                       if (snapshot != null)
+                                       {
+                                           foreach (var documentChange in snapshot.DocumentChanges)
+                                           {
+                                               var newItem = documentChange.Document.ToObject<ItemModel>();
+                                               var i = itemAdapter.ItemList.FindIndex(x => x.Equals(newItem));
+                                               switch (documentChange.Type)
+                                               {
+                                                   case DocumentChangeType.Added:
+                                                       if (i == -1)
+                                                       {
+                                                           itemAdapter.ItemList.Add(newItem);
+                                                           itemAdapter.NotifyItemInserted(itemAdapter.ItemCount - 1);
+                                                       }
+                                                       else
+                                                           itemAdapter.NotifyDataSetChanged();
+                                                       break;
+                                                   case DocumentChangeType.Removed:
+                                                       itemAdapter.ItemList.Remove(newItem);
+                                                       itemAdapter.NotifyItemRemoved(i);
+                                                       break;
+                                                   case DocumentChangeType.Modified:
+                                                       itemAdapter.ItemList[i] = newItem;
+                                                       itemAdapter.NotifyItemChanged(i);
+                                                       break;
+                                               }
+                                           }
+                                           if (itemAdapter.ItemCount == 0)
+                                           {
+                                               imageView.Visibility = ViewStates.Visible;
+                                               recyclerView.Visibility = ViewStates.Invisible;
+                                           }
+                                           else
+                                           {
+                                               imageView.Visibility = ViewStates.Invisible;
+                                               recyclerView.Visibility = ViewStates.Visible;
+                                           }
+                                       }
+                                   });
             }
             //ItemTouchHelper.Callback callback = new MyItemTouchHelper(STORAGE_FOLDER, examname);
             //ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
@@ -80,7 +128,9 @@ namespace Studid.Fragments
         {
             FirebaseUser user = FirebaseAuth.Instance.CurrentUser;
             ItemModel itemcheck_clicked = itemAdapter.ItemList[e.Position];
-            DocumentReference ItemToUpdate = (DocumentReference)await CrossCloudFirestore.Current
+            if (itemcheck_clicked.isMemorized)
+            {
+                await CrossCloudFirestore.Current
                         .Instance
                         .Collection("Users")
                         .Document(CrossFirebaseAuth.Current.Instance.CurrentUser.Uid)
@@ -88,14 +138,19 @@ namespace Studid.Fragments
                         .Document(examId)
                         .Collection(STORAGE_FOLDER)
                         .Document(itemcheck_clicked.itemId)
-                        .GetAsync();
-            if (itemcheck_clicked.isMemorized)
-            {
-                ItemToUpdate.Update("memorized", false);
+                        .UpdateAsync("isMemorized", false);
             }
             else
             {
-                ItemToUpdate.Update("memorized", true);
+                await CrossCloudFirestore.Current
+                        .Instance
+                        .Collection("Users")
+                        .Document(CrossFirebaseAuth.Current.Instance.CurrentUser.Uid)
+                        .Collection("Exams")
+                        .Document(examId)
+                        .Collection(STORAGE_FOLDER)
+                        .Document(itemcheck_clicked.itemId)
+                        .UpdateAsync("isMemorized", true);
             }
         }
 
@@ -105,17 +160,17 @@ namespace Studid.Fragments
             FirebaseUser user = FirebaseAuth.Instance.CurrentUser;
             ItemModel itemname_clicked = itemAdapter.ItemList[e.Position];
             string itemname = itemname_clicked.itemName;
-            Dialog nameDialog = new Dialog(Application.Context);
+            Dialog nameDialog = new Dialog(this.Context);
             nameDialog.SetContentView(Resource.Layout.dialog_name_update);
             EditText editText = (EditText)nameDialog.FindViewById(Resource.Id.dialog_name_editText);
-            editText.Text = examname;
+            editText.Text = itemname;
             /* Non riconosce più android.support.design e quindi ho messo il design che sta in google.design*/
             TextInputLayout textInputLayout = (TextInputLayout)nameDialog.FindViewById(Resource.Id.dialog_name_input_layout);
             nameDialog.Show();
             Android.Widget.Button okButton = (Android.Widget.Button)nameDialog.FindViewById(Resource.Id.name_ok);
             Android.Widget.Button cancelButton = (Android.Widget.Button)nameDialog.FindViewById(Resource.Id.name_cancel);
             okButton.Click += async delegate
-            {
+            {// need to put srting in strings.xml
                 string itemNameNew = editText.Text.ToUpper().Trim();
                 if (itemNameNew.Equals(""))
                 {
@@ -165,83 +220,30 @@ namespace Studid.Fragments
             }
             return false;
         }
-
-        private void UpdateUI(RecyclerView recyclerView, View view)
-        {
-            ImageView imageView = (ImageView)view.FindViewById(Resource.Id.empty_recycler_image);
-            CrossCloudFirestore.Current
-                               .Instance
-                               .Collection("Users")
-                               .Document(CrossFirebaseAuth.Current.Instance.CurrentUser.Uid)
-                               .Collection("Exams")
-                               .Document(examId)
-                               .Collection(STORAGE_FOLDER)
-                               .AddSnapshotListener((snapshot, error) =>
-                               {
-                                   if (snapshot != null)
-                                   {
-                                       foreach (var documentChange in snapshot.DocumentChanges)
-                                       {
-                                           var newItem = documentChange.Document.ToObject<ItemModel>();
-                                           var i = itemAdapter.ItemList.FindIndex(x => x.Equals(newItem));
-                                           switch (documentChange.Type)
-                                           {
-                                               case DocumentChangeType.Added:
-                                                   if (i == -1)
-                                                   {
-                                                       itemAdapter.ItemList.Add(newItem);
-                                                       itemAdapter.NotifyItemInserted(itemAdapter.ItemCount - 1);
-                                                   }
-                                                   else
-                                                       itemAdapter.NotifyDataSetChanged();
-                                                   break;
-                                               case DocumentChangeType.Removed:
-                                                   itemAdapter.ItemList.Remove(newItem);
-                                                   itemAdapter.NotifyItemRemoved(i);
-                                                   break;
-                                               case DocumentChangeType.Modified:
-                                                   itemAdapter.ItemList[i] = newItem;
-                                                   itemAdapter.NotifyItemChanged(i);
-                                                   break;
-                                           }
-                                           if (itemAdapter.ItemCount == 0)
-                                           {
-                                               imageView.Visibility = ViewStates.Visible;
-                                               recyclerView.Visibility = ViewStates.Invisible;
-                                           }
-                                           else
-                                           {
-                                               imageView.Visibility = ViewStates.Invisible;
-                                               recyclerView.Visibility = ViewStates.Visible;
-                                           }
-                                       }
-                                   }
-                               });
-        }
-        public async void sendInput(string filename, Android.Net.Uri fileuri)
+        public async void sendInput(string filename, string fileuri)
         {
             if (user != null && isOnline(this.Context))
             {
                 String itemId = Guid.NewGuid().ToString();
                 var storageReference = CrossFirebaseStorage.Current.Instance.RootReference.Child(user.Uid + "/" + examId + "/" + STORAGE_FOLDER + "/" + itemId);
-                //var uploadProgress = new Progress<IUploadState>();
-                //uploadProgress.ProgressChanged += (sender, e) =>
-                //{
-                //    progressIndicator.Show();
-                //    progressIndicator.Max=(int)e.TotalByteCount;
-                //    progressIndicator.Progress =(int)e.BytesTransferred;
-                //    var progress = e.TotalByteCount > 0 ? 100.0 * e.BytesTransferred / e.TotalByteCount : 0;
-                //    if (progress == 100)
-                //    {
-                //        CrossCloudFirestore.Current.Instance
-                //            .Collection("Users").Document(user.Uid)
-                //            .Collection("Exams").Document(examname)
-                //            .Collection(STORAGE_FOLDER).Document(itemId)
-                //            .SetAsync(new ItemModel(itemId, filename));
-                //    }
-                //};
-                //await storageReference.PutFileAsync(fileuri.Path, progress: uploadProgress);
-                await storageReference.PutFileAsync(fileuri.Path);
+                var uploadProgress = new Progress<IUploadState>();
+                uploadProgress.ProgressChanged += async (sender, e) =>
+                {
+                    progressIndicator.Show();
+                    progressIndicator.Max = (int)e.TotalByteCount;
+                    progressIndicator.Progress = (int)e.BytesTransferred;
+                    var progress = e.TotalByteCount > 0 ? 100.0 * e.BytesTransferred / e.TotalByteCount : 0;
+                    if (progress == 100)
+                    {
+                        await CrossCloudFirestore.Current.Instance
+                            .Collection("Users").Document(user.Uid)
+                            .Collection("Exams").Document(examId)
+                            .Collection(STORAGE_FOLDER).Document(itemId)
+                            .SetAsync(new ItemModel(itemId, filename));
+                        progressIndicator.Hide();
+                    }
+                };
+                await storageReference.PutFileAsync(fileuri, progress: uploadProgress);
             } else
             {
                 AlertDialog.Builder alert = new AlertDialog.Builder(this.Context);
@@ -263,7 +265,6 @@ namespace Studid.Fragments
             Intent intent1 = Intent.CreateChooser(openfile, GetString(Resource.String.openfile_chooser));
             StartActivity(intent1);
         }
-
 
         //checking if there is connection
         private bool isOnline(Context context)

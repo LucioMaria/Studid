@@ -37,7 +37,6 @@ namespace Studid.Adapter
             ItemList = new List<ItemModel>();
         }
 
-        // Create new views (invoked by the layout manager)
         public override RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType)
         {
 
@@ -45,16 +44,12 @@ namespace Studid.Adapter
             var vh = new ItemViewHolder(itemview, OnClick, OnLongClick, OnItemNameClick, OnItemCheckClick, OnItemSelectClick);
             return vh;
         }
-
-        // Replace the contents of a view (invoked by the layout manager)
         public override void OnBindViewHolder(RecyclerView.ViewHolder viewHolder, int position)
         {
-            var examitem = ItemList[position];
+            var item = ItemList[position];
             var holder = viewHolder as ItemViewHolder;
-            // Replace the contents of the view with that element
-            // var holder = viewHolder as ItemAdapterViewHolder;
-            holder.textView.Text = examitem.itemName;
-            holder.check.Checked = examitem.isMemorized;
+            holder.textView.Text = item.itemName;
+            holder.check.Checked = item.isMemorized;
             if (holder.check.Checked)
             {
                 holder.chekedText.Visibility = ViewStates.Visible;
@@ -63,9 +58,6 @@ namespace Studid.Adapter
             {
                 holder.chekedText.Visibility = ViewStates.Invisible;
             }
-
-
-            // holder.TextView.Text = items[position];
         }
 
         public override int ItemCount => ItemList.Count;
@@ -80,7 +72,6 @@ namespace Studid.Adapter
 
     public class ItemViewHolder : RecyclerView.ViewHolder
     {
-        //public TextView TextView { get; set; }
         public TextView textView { get; set; }
         public TextView chekedText { get; set; }
         public CheckBox check { get; set; }
@@ -90,8 +81,6 @@ namespace Studid.Adapter
         public ItemViewHolder(View itemView, Action<ItemAdapterClickEventArgs> clickListener,
                             Action<ItemAdapterClickEventArgs> longClickListener, Action<ItemAdapterClickEventArgs> nameClickListener, Action<ItemAdapterClickEventArgs> checkClickListener, Action<ItemAdapterClickEventArgs> selectClickListener) : base(itemView)
         {
-            //TextView = v;
-            int position = AdapterPosition;
             textView = (TextView)itemView.FindViewById(Resource.Id.textView);
             check = (CheckBox)itemView.FindViewById(Resource.Id.check);
             chekedText = (TextView)itemView.FindViewById(Resource.Id.checktext);

@@ -31,6 +31,7 @@ namespace Studid
     [Activity(Label = "ItemChooserActivity")]
     public class ItemChooserActivity : AppCompatActivity
     {
+        private MaterialToolbar topAppBar;
         private BottomNavigationView navigation;
         private FragmentFlashcards fragmentFlashcards = new FragmentFlashcards();
         private FragmentRecordings fragmentRecordings = new FragmentRecordings();
@@ -64,7 +65,7 @@ namespace Studid
                 selectedFragment = fragmentFlashcards;
                 SupportFragmentManager.BeginTransaction().Replace(Resource.Id.item_fragment_container, fragmentFlashcards).Commit();
             }
-            MaterialToolbar topAppBar = (MaterialToolbar)FindViewById(Resource.Id.topAppBar);
+            topAppBar = (MaterialToolbar)FindViewById(Resource.Id.topAppBar);
             SetSupportActionBar(topAppBar);
             SupportActionBar.Title = examName;                   
             SupportActionBar.SetHomeButtonEnabled(true);
@@ -73,8 +74,7 @@ namespace Studid
             addbtn.Click += Addbtn_Click;
             MaterialTextView examDetailsTv = (MaterialTextView)FindViewById(Resource.Id.exam_detail_tv);
             DateFormat format = new SimpleDateFormat("dd/MMM/yy", Locale.Italy);
-            examDetailsTv.Text = "Date: " + format.Format(examDate) + "\nCfu: " + examCfu;
-            PropicTarget.setProPic(this, topAppBar);
+            examDetailsTv.Text = "Date: " + format.Format(examDate) + "\nCfu: " + examCfu;          
             //handling the navigation between fragments
             navigation = (BottomNavigationView)FindViewById(Resource.Id.bottom_navigation_i);
             navigation.NavigationItemSelected += Navigation_NavigationItemSelected;
@@ -83,6 +83,7 @@ namespace Studid
         public override bool OnCreateOptionsMenu(IMenu menu)
         {
             MenuInflater.Inflate(Resource.Menu.top_app_bar, menu);
+            PropicTarget.setProPic(this, topAppBar);
             return base.OnCreateOptionsMenu(menu);
         }
         private void Addbtn_Click(object sender, EventArgs e)
