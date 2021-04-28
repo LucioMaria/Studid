@@ -43,7 +43,7 @@ namespace Studid.Dialogs
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
 
-            View view = inflater.Inflate(Resource.Layout.addexam, container, false);
+            View view = inflater.Inflate(Resource.Layout.dialog_add_exam, container, false);
             addexamnameText = (EditText)view.FindViewById(Resource.Id.dialog_name_editText);
             addexaminputlayout = (TextInputLayout)view.FindViewById(Resource.Id.dialog_name_input_layout);
             Calendar calendar = Calendar.GetInstance(Locale.Italy);
