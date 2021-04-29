@@ -11,6 +11,7 @@ using Android.Widget;
 using AndroidX.RecyclerView.Widget;
 using Firebase;
 using Firebase.Firestore;
+using Firebase.Storage;
 using Studid.Adapter;
 using Plugin.CloudFirestore;
 using Android.Graphics;
@@ -25,15 +26,20 @@ using AlertDialog = AndroidX.AppCompat.App.AlertDialog;
 
 namespace Studid
 {
-    public class MyItemTouchHelper : ItemTouchHelper.Callback
+    public class ItemTouchCallback : ItemTouchHelper.SimpleCallback
     {
 
-        public string storage_folder;
-        public string examname;
-        public MyItemTouchHelper(string storage_folder, string examname ) : base((IntPtr)0, (JniHandleOwnership)ItemTouchHelper.Left)
+        private string storage_folder;
+        private string examId;
+        private Context context;
+
+        private StorageReference storageRef;
+        public ItemTouchCallback(string storage_folder, string examId, Context context ): base(0,ItemTouchHelper.Left)
         {
+            storageRef = FirebaseStorage.Instance.Reference;
             this.storage_folder = storage_folder;
-            this.examname = examname;
+            this.examId = examId;
+            this.context = context;
         }
         public override int GetMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder)
         {
@@ -44,31 +50,31 @@ namespace Studid
         {
             return true;
         }
-
-
-
-        public override async void OnSwiped(RecyclerView.ViewHolder viewHolder, int swipedir)
+        public override void OnSwiped(RecyclerView.ViewHolder viewHolder, int swipedir)
         {
             var holder = viewHolder as ItemViewHolder;
-            if (isOnline(Application.Context))
+            if (isOnline(context))
             {
-                string itemname = holder.textView.Text;
                 FirebaseUser user = FirebaseAuth.Instance.CurrentUser;
-                AlertDialog.Builder alertDialog = new AlertDialog.Builder(Application.Context);
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
 
                 alertDialog.SetTitle(Resource.String.dialog_cancel_title);
                 alertDialog.SetMessage(Resource.String.dialog_cancel_message);
-                alertDialog.SetNeutralButton("Ok", async delegate
+                alertDialog.SetPositiveButton("Ok", async delegate
                 {
+                    storageRef.Child(user.Uid + "/" + examId + "/" + storage_folder + "/" + holder.itemId)
+                                        .Delete();
                     await CrossCloudFirestore.Current
                          .Instance
+                         .Collection("Users")
+                         .Document(user.Uid)
                          .Collection("Exams")
-                         .Document(examname)
+                         .Document(examId)
                          .Collection(storage_folder)
-                         .Document(itemname)
+                         .Document(holder.itemId)
                          .DeleteAsync();
                 });
-                alertDialog.SetNeutralButton("Cancel", delegate
+                alertDialog.SetNegativeButton("Cancel", delegate
                 {
                     alertDialog.Dispose();
                 });
@@ -87,8 +93,8 @@ namespace Studid
         {
             base.OnChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
             View itemView = viewHolder.ItemView;
-            ColorDrawable background = new ColorDrawable(Xamarin.Forms.Color.FromHex("#BBDEFB").ToAndroid());
-            Drawable deleteIcon = ContextCompat.GetDrawable(Application.Context, Resource.Drawable.deletebin);
+            ColorDrawable background = new ColorDrawable(new Color(ContextCompat.GetColor(context, Resource.Color.colorPrimarylight)));
+            Drawable deleteIcon = ContextCompat.GetDrawable(context, Resource.Drawable.deletebin);
             int backgroundCornerOffset = 40; //so background is behind the rounded corners of itemView
             int backgroundHeightOffset = 30;
             int backgroundRightOffset = 30;
@@ -111,7 +117,6 @@ namespace Studid
             { // view is unSwiped
                 background.SetBounds(0, 0, 0, 0);
             }
-
             background.Draw(c);
             deleteIcon.Draw(c);
         }

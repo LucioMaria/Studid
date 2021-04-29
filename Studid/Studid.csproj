@@ -89,13 +89,12 @@
     <Compile Include="Fragments\FragmentRecordings.cs" />
     <Compile Include="Models\ExamModel.cs" />
     <Compile Include="Models\ItemModel.cs" />
-    <Compile Include="MyItemTouchHelper.cs" />
+    <Compile Include="ItemTouchCallback.cs" />
     <Compile Include="ExamTouchCallback.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="google-services.old" />
     <GoogleServicesJson Include="google-services.json" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Properties\AndroidManifest.xml" />
@@ -218,7 +217,7 @@
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout\examrow.axml">
+    <AndroidResource Include="Resources\layout\exam_row.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>
@@ -309,11 +308,6 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\xml\provider_paths.xml">
-      <SubType>Designer</SubType>
-    </AndroidResource>
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\layout\layout1.xml">
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>

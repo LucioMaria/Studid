@@ -1,5 +1,5 @@
 <resources>
-	<string name="app_name" translatable="false">Studid</string>
+	<string name="app_name" translatable="false">Studied!</string>
 	<string name="bottomnav_flash">Flashcards</string>
 	<string name="bottomnav_recordings">Recordings</string>
 	<string name="bottomnav_cmaps">Concept map</string>
@@ -17,14 +17,15 @@
 	<string name="empty_name_field">Please fill the name field</string>
 	<string name="isMemorized_checkbox">Memorized?</string>
 	<string name="empty_file_field">Please choose a file</string>
-	<string name="server_client_id" translatable="false">152337408575-ss0r3akabfenpbdcbrbk3c0b0vdp2l70.apps.googleusercontent.com</string>
 	<string name="logout" translatable="false">Logout</string>
 	<string name="alert_login">You need to be logged in in order to use this app.</string>
 	<string name="openfile_chooser">Open with</string>
-	<string name="overflow_name_field">please 10 caracter max</string>
+	<string name="overflow_name_field">please 20 caracter max</string>
 	<string name="used_name">Name already used</string>
 	<string name="connection_title">Connection required</string>
 	<string name="connection_message">you need to be online to perform this action</string>
 	<string name="login_title">Login required</string>
 	<string name="dialog_name_update">Update the name</string>
+
+	<string name="server_client_id" translatable="false">152337408575-ss0r3akabfenpbdcbrbk3c0b0vdp2l70.apps.googleusercontent.com</string>
 </resources>

@@ -34,7 +34,7 @@ namespace Studid.Adapter
         }
         public override RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType)
         {
-            View itemview = LayoutInflater.From(parent.Context).Inflate(Resource.Layout.examrow, parent, false);
+            View itemview = LayoutInflater.From(parent.Context).Inflate(Resource.Layout.exam_row, parent, false);
             var vh = new ExamViewHolder(itemview, OnExamSelectClick, OnLongClick, OnExamNameClick, OnExamDateClick, OnExamCfuClick);
             return vh;
         }
@@ -50,7 +50,6 @@ namespace Studid.Adapter
             holder.examDateTV.Text = fdate;
             String cfuString = ExamList[position].cfu + "";
             holder.cfuButton.Text = cfuString;
-            // holder.examNameTV.Click += ItemView_Click;
         }
 
         public override int ItemCount => ExamList.Count;
@@ -64,7 +63,6 @@ namespace Studid.Adapter
 
     public class ExamViewHolder : RecyclerView.ViewHolder
     {
-        //public TextView TextView { get; set; }
         public TextView examNameTV { get; set; }
         public TextView examDateTV { get; set; }
         public Button cfuButton { get; set; }

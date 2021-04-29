@@ -48,6 +48,7 @@ namespace Studid.Adapter
         {
             var item = ItemList[position];
             var holder = viewHolder as ItemViewHolder;
+            holder.itemId = item.itemId;
             holder.textView.Text = item.itemName;
             holder.check.Checked = item.isMemorized;
             if (holder.check.Checked)
@@ -76,6 +77,8 @@ namespace Studid.Adapter
         public TextView chekedText { get; set; }
         public CheckBox check { get; set; }
         public ImageButton selectItem { get; set; }
+
+        public string itemId;
 
 
         public ItemViewHolder(View itemView, Action<ItemAdapterClickEventArgs> clickListener,

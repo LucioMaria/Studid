@@ -111,13 +111,8 @@ namespace Studid.Fragments
                                        }
                                    });
             }
-            //ItemTouchHelper.Callback callback = new MyItemTouchHelper(STORAGE_FOLDER, examname);
-            //ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
-            //itemTouchHelper.AttachToRecyclerView(recyclerView);
-            
             return view;
         }
-
         private void SetupRecyclerView()
         {
             recyclerView.SetLayoutManager(new LinearLayoutManager(Application.Context));
@@ -126,6 +121,9 @@ namespace Studid.Fragments
             itemAdapter.Item_CheckClick += AdapterItem_Item_CheckClick;
             itemAdapter.Item_SelectClick += AdapterItem_Item_SelectClick;
             recyclerView.SetAdapter(itemAdapter);
+            ItemTouchHelper.Callback callback = new ItemTouchCallback(STORAGE_FOLDER, examId, this.Context);
+            ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
+            itemTouchHelper.AttachToRecyclerView(recyclerView);
         }
 
         private async void AdapterItem_Item_SelectClick(object sender, ItemAdapterClickEventArgs e)
@@ -200,20 +198,17 @@ namespace Studid.Fragments
                 string itemNameNew = editText.Text.ToUpper().Trim();
                 if (itemNameNew.Equals(""))
                 {
-                    // textInputLayout.ErrorEnabled = true;
-                    textInputLayout.Error = "Please fill the name field";
+                    textInputLayout.Error = Resources.GetString(Resource.String.empty_name_field);
                     textInputLayout.RequestFocus();
                 }
-                else if (itemNameNew.Length > 15)
+                else if (itemNameNew.Length > 20)
                 {
-                    // textInputLayout.ErrorEnabled = true;
-                    textInputLayout.Error = "Please enter a short name";
+                    textInputLayout.Error = Resources.GetString(Resource.String.overflow_name_field);
                     textInputLayout.RequestFocus();
                 }
                 else if (IsSameName(itemNameNew))
                 {
-                    // textInputLayout.ErrorEnabled = true;
-                    textInputLayout.Error = "Please change the name field";
+                    textInputLayout.Error = Resources.GetString(Resource.String.used_name);
                     textInputLayout.RequestFocus();
                 }
                 else
@@ -246,9 +241,13 @@ namespace Studid.Fragments
             }
             return false;
         }
-        public async void sendInput(string filename, Android.Net.Uri fileuri)
+        public AddItemDialog.OnInputSelected.nameState sendInput(string filename, Android.Net.Uri fileuri)
         {
-            if (user != null && isOnline(this.Context))
+            if (IsSameName(filename))
+            {
+                return AddItemDialog.OnInputSelected.nameState.USED;
+            }
+            else if (user != null && isOnline(this.Context))
             {
                 this.filename = filename;
                 itemId = Guid.NewGuid().ToString();
@@ -257,13 +256,16 @@ namespace Studid.Fragments
                     .AddOnProgressListener(this)
                     .AddOnSuccessListener(this)
                     .AddOnFailureListener(this);
-            } else
+                return AddItemDialog.OnInputSelected.nameState.OK;
+            }
+            else
             {
                 AlertDialog.Builder alert = new AlertDialog.Builder(this.Context);
                 alert.SetTitle("Login and connection reqired")
                         .SetMessage("you need to be online and logged in to perform this action");
                 alert.Show();
-            }
+                return AddItemDialog.OnInputSelected.nameState.H_ERROR;
+            }   
         }
 
         //launching intent for file opening

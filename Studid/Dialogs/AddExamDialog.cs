@@ -64,17 +64,17 @@ namespace Studid.Dialogs
                 string examName = addexamnameText.Text.ToUpper().Trim();
                 if (examName.Equals(""))
                 {
-                    addexaminputlayout.Error = "Please fill the name field";
+                    addexaminputlayout.Error = Resources.GetString(Resource.String.empty_name_field);
                     addexaminputlayout.RequestFocus();
                 }
-                else if (examName.Length > 15)
+                else if (examName.Length > 20)
                 {
-                    addexaminputlayout.Error = "Please enter a short name";
+                    addexaminputlayout.Error = Resources.GetString(Resource.String.overflow_name_field);
                     addexaminputlayout.RequestFocus();
                 }
                 else if (await IsSameNameAsync(examName))
                 {
-                    addexaminputlayout.Error = "Please change the name field";
+                    addexaminputlayout.Error = Resources.GetString(Resource.String.used_name);
                     addexaminputlayout.RequestFocus();
                 }
                 else

@@ -58,9 +58,9 @@ namespace Studid.Fragments
             {
                 UpdateUI(recyclerView, view);
             }
-            ItemTouchHelper.Callback callback = new MyItemTouchHelper(STORAGE_FOLDER, examname);
-            ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
-            itemTouchHelper.AttachToRecyclerView(recyclerView);
+            //ItemTouchHelper.Callback callback = new ItemTouchCallback(STORAGE_FOLDER, examname);
+            //ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
+            //itemTouchHelper.AttachToRecyclerView(recyclerView);
 
 
 

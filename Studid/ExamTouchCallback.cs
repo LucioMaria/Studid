@@ -11,6 +11,7 @@ using Android.Widget;
 using AndroidX.RecyclerView.Widget;
 using Firebase;
 using Firebase.Firestore;
+using Firebase.Storage;
 using Studid.Adapter;
 using Plugin.CloudFirestore;
 using Android.Graphics;
@@ -51,7 +52,6 @@ namespace Studid
                 {
                     FirebaseUser user = FirebaseAuth.Instance.CurrentUser;
                     AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
-                    //need to delete also the elements in storage
                     alertDialog.SetTitle(Resource.String.dialog_cancel_title);
                     alertDialog.SetMessage(Resource.String.dialog_cancel_message);
                     alertDialog.SetPositiveButton("Ok", async delegate
@@ -59,10 +59,16 @@ namespace Studid
                         await CrossCloudFirestore.Current
                              .Instance
                              .Collection("Users")
-                             .Document(CrossFirebaseAuth.Current.Instance.CurrentUser.Uid)
+                             .Document(user.Uid)
                              .Collection("Exams")
                              .Document(holder.examId)
                              .DeleteAsync();
+                        var storageRef = FirebaseStorage.Instance.Reference;
+                        await storageRef.Child(user.Uid + "/" + holder.examId).DeleteAsync();
+                        //await storageRef.Child(user.Uid + "/" + holder.examId + "/Flashcards").DeleteAsync();
+                        //await storageRef.Child(user.Uid + "/" + holder.examId + "/Recordings").DeleteAsync();
+                        //await storageRef.Child(user.Uid + "/" + holder.examId + "/Cmaps").DeleteAsync();
+                        //await storageRef.Child(user.Uid + "/" + holder.examId + "/Exercises").DeleteAsync();
                     });
                     alertDialog.SetNegativeButton("Cancel", delegate
                     {
@@ -79,11 +85,10 @@ namespace Studid
                 }
         }
 
-        public override void OnChildDrawOver(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, bool isCurrentlyActive)
+        public override void OnChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, bool isCurrentlyActive)
         {
             base.OnChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
             View itemView = viewHolder.ItemView;
-            //ColorDrawable background = new ColorDrawable(Xamarin.Forms.Color.FromHex("#BBDEFB").ToAndroid());
             ColorDrawable background = new ColorDrawable(new Color(ContextCompat.GetColor(context, Resource.Color.colorPrimarylight)));
             Drawable deleteIcon = ContextCompat.GetDrawable(context, Resource.Drawable.deletebin);
             int backgroundCornerOffset = 40; //so background is behind the rounded corners of itemView
@@ -119,7 +124,6 @@ namespace Studid
             //should check null because in airplane mode it will be null
             return (netInfo != null && netInfo.IsConnected);
         }
-
         public class TouchHelperClickEventArgs : EventArgs
         {
             public View View { get; set; }

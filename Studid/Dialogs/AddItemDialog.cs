@@ -86,9 +86,15 @@ namespace Studid.Dialogs
 
         private void ActionOk_Click(object sender, EventArgs e)
         {
-            if (itemNameET.Text + "".Trim() == "")
+            var itemName = itemNameET.Text.Trim();
+            if (itemName == "")
             {
                 addItemInputLayout.Error = Resources.GetString(Resource.String.empty_name_field);
+                addItemInputLayout.RequestFocus();
+            }
+            else if(itemName.Length>=20) 
+            {
+                addItemInputLayout.Error = Resources.GetString(Resource.String.overflow_name_field);
                 addItemInputLayout.RequestFocus();
             }
             else if (itemUriTV.Text + "" == "")
@@ -97,13 +103,22 @@ namespace Studid.Dialogs
             }
             else
             {
-                onInputSelected.sendInput(itemNameET.Text + "", fileUri);
-                try
+                var inputResoult = onInputSelected.sendInput(itemNameET.Text + "", fileUri);
+                switch (inputResoult)
                 {
-                    Dialog.Dismiss();
+                    case OnInputSelected.nameState.OK:
+                        Dialog.Dismiss();
+                        break;
+                    case OnInputSelected.nameState.H_ERROR:
+                        Dialog.Dismiss();
+                        break;
+                    case OnInputSelected.nameState.USED:
+                        {
+                            addItemInputLayout.Error = Resources.GetString(Resource.String.used_name);
+                            addItemInputLayout.RequestFocus();
+                        }
+                        break;
                 }
-                catch (NullPointerException) { }
-
             }
         }
 
@@ -114,18 +129,6 @@ namespace Studid.Dialogs
             searchfile.AddFlags(ActivityFlags.GrantReadUriPermission);
             searchfile.AddFlags(ActivityFlags.GrantPersistableUriPermission);
             StartActivityForResult(searchfile, 21);
-
-            //var customFileType =
-            //    new FilePickerFileType(new Dictionary<DevicePlatform, IEnumerable<string>>
-            //    {
-            //        { DevicePlatform.Android, new[] { argValue } },
-            //    });
-            //var options = new PickOptions
-            //{
-            //    FileTypes = customFileType,
-            //};
-            //var result = await FilePicker.PickAsync(options);
-            //filePath = result.FullPath;
         }
         public override void OnAttach(Context context)
         {
@@ -151,7 +154,8 @@ namespace Studid.Dialogs
         //interface to override for getting the uri and the file name
         public interface OnInputSelected
         {
-            void sendInput(System.String filename, Android.Net.Uri fileuri);
+            enum nameState {OK=0, USED = 1, H_ERROR=-1};
+            nameState sendInput(System.String filename, Android.Net.Uri fileuri);
         }
     }
 }

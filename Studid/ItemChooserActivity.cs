@@ -74,11 +74,9 @@ namespace Studid
             addbtn.Click += Addbtn_Click;
             MaterialTextView examDetailsTv = (MaterialTextView)FindViewById(Resource.Id.exam_detail_tv);
             DateFormat format = new SimpleDateFormat("dd/MMM/yy", Locale.Italy);
-            examDetailsTv.Text = "Date: " + format.Format(examDate) + "\nCfu: " + examCfu;          
-            //handling the navigation between fragments
+            examDetailsTv.Text = "Date: " + format.Format(examDate) + "\nCfu: " + examCfu;
             navigation = (BottomNavigationView)FindViewById(Resource.Id.bottom_navigation_i);
             navigation.NavigationItemSelected += Navigation_NavigationItemSelected;
-            // OnNavigationItemSelected((IMenuItem)this); se si lascia questo si mette OnNavigationItemSelcted nell'OnCreate
         }
         public override bool OnCreateOptionsMenu(IMenu menu)
         {

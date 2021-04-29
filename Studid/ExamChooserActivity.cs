@@ -120,7 +120,7 @@ namespace Studid
                     CrossCloudFirestore.Current
                         .Instance
                         .Collection("Users")
-                        .Document(CrossFirebaseAuth.Current.Instance.CurrentUser.Uid)
+                        .Document(user.Uid)
                         .Collection("Exams")
                         .AddSnapshotListener((snapshot, error) =>
                         {
@@ -189,10 +189,8 @@ namespace Studid
                 Log.Info("Onclick", "Click");
             }
         }
-
         private void ExamCfuClick(object sender, ExamAdapterClickEventArgs e)
         {
-            
             FirebaseUser user = FirebaseAuth.Instance.CurrentUser;
             if (user == null)
             {
@@ -228,7 +226,6 @@ namespace Studid
                 cfuDialog.Show();
             }
         }
-
         private void ExamDateClick(object sender, ExamAdapterClickEventArgs e)
         {
             FirebaseUser user = FirebaseAuth.Instance.CurrentUser;
@@ -298,17 +295,17 @@ namespace Studid
                     string examNameNew = editText.Text.ToUpper().Trim();
                     if (examNameNew.Equals(""))
                     {
-                        textInputLayout.Error = "Please fill the name field";
+                        textInputLayout.Error = Resources.GetString(Resource.String.empty_name_field);
                         textInputLayout.RequestFocus();
                     }
                     else if (examNameNew.Length > 15)
                     {
-                        textInputLayout.Error = "Please enter a short name";
+                        textInputLayout.Error = Resources.GetString(Resource.String.overflow_name_field);
                         textInputLayout.RequestFocus();
                     }
                     else if (IsSameName(examNameNew))
                     {
-                        textInputLayout.Error = "Please change the name field";
+                        textInputLayout.Error = Resources.GetString(Resource.String.used_name);
                         textInputLayout.RequestFocus();
                     }
                     else
