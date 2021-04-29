@@ -27,7 +27,7 @@ using Plugin.FirebaseAuth;
 
 namespace Studid
 {
-    public class ExamTouchCallback : ItemTouchHelper.SimpleCallback
+    public class ExamTouchCallback : ItemTouchHelper.SimpleCallback, Android.Gms.Tasks.IOnSuccessListener
     {
         private Context context;
         public  ExamTouchCallback(Context context) : base(0,ItemTouchHelper.Left)
@@ -63,12 +63,11 @@ namespace Studid
                              .Collection("Exams")
                              .Document(holder.examId)
                              .DeleteAsync();
-                        var storageRef = FirebaseStorage.Instance.Reference;
-                        await storageRef.Child(user.Uid + "/" + holder.examId).DeleteAsync();
-                        //await storageRef.Child(user.Uid + "/" + holder.examId + "/Flashcards").DeleteAsync();
-                        //await storageRef.Child(user.Uid + "/" + holder.examId + "/Recordings").DeleteAsync();
-                        //await storageRef.Child(user.Uid + "/" + holder.examId + "/Cmaps").DeleteAsync();
-                        //await storageRef.Child(user.Uid + "/" + holder.examId + "/Exercises").DeleteAsync();
+                        var storageref = FirebaseStorage.Instance.Reference;
+                        deleteStorageBuket(storageref.Child(user.Uid + "/" + holder.examId + "/"+"Flashcards"));
+                        deleteStorageBuket(storageref.Child(user.Uid + "/" + holder.examId + "/" + "Recordings"));
+                        deleteStorageBuket(storageref.Child(user.Uid + "/" + holder.examId + "/" + "Cmaps"));
+                        deleteStorageBuket(storageref.Child(user.Uid + "/" + holder.examId + "/" + "Exercises"));
                     });
                     alertDialog.SetNegativeButton("Cancel", delegate
                     {
@@ -124,6 +123,23 @@ namespace Studid
             //should check null because in airplane mode it will be null
             return (netInfo != null && netInfo.IsConnected);
         }
+
+        void deleteStorageBuket(StorageReference storageRef)
+        {
+            storageRef.ListAll().AddOnSuccessListener(this);
+        }
+        public async void OnSuccess(Java.Lang.Object result)
+        {
+            if (result is Firebase.Storage.ListResult)
+            {
+                var listResult = result as Firebase.Storage.ListResult;
+                foreach (StorageReference item in listResult.Items)
+                {
+                   await item.DeleteAsync();
+                }
+            }
+        }
+
         public class TouchHelperClickEventArgs : EventArgs
         {
             public View View { get; set; }

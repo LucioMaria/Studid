@@ -62,8 +62,8 @@ namespace Studid
                 alertDialog.SetMessage(Resource.String.dialog_cancel_message);
                 alertDialog.SetPositiveButton("Ok", async delegate
                 {
-                    storageRef.Child(user.Uid + "/" + examId + "/" + storage_folder + "/" + holder.itemId)
-                                        .Delete();
+                    await storageRef.Child(user.Uid + "/" + examId + "/" + storage_folder + "/" + holder.itemId)
+                                        .DeleteAsync();
                     await CrossCloudFirestore.Current
                          .Instance
                          .Collection("Users")
