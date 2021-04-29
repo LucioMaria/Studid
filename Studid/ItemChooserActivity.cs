@@ -94,7 +94,7 @@ namespace Studid
             }
         }
 
-        public void onWindowFocusChanged(bool hasFocus)
+        public override void OnWindowFocusChanged(bool hasFocus)
         {
             base.OnWindowFocusChanged(hasFocus);
             if (hasFocus)

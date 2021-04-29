@@ -35,6 +35,7 @@ using AlertDialog = AndroidX.AppCompat.App.AlertDialog;
 using Android.Net;
 using Plugin.FirebaseAuth;
 using Android.Graphics;
+using AndroidX.Core.Content;
 
 namespace Studid
 {
