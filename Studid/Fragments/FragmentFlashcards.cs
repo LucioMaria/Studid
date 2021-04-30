@@ -153,30 +153,23 @@ namespace Studid.Fragments
 
         private async void AdapterItem_Item_CheckClick(object sender, ItemAdapterClickEventArgs e)
         {
+            FirebaseUser user = FirebaseAuth.Instance.CurrentUser;
             ItemModel itemcheck_clicked = itemAdapter.ItemList[e.Position];
-            if (itemcheck_clicked.isMemorized)
-            {
-                await CrossCloudFirestore.Current
+            var doctoupdate = CrossCloudFirestore.Current
                         .Instance
                         .Collection("Users")
                         .Document(CrossFirebaseAuth.Current.Instance.CurrentUser.Uid)
                         .Collection("Exams")
                         .Document(examId)
                         .Collection(STORAGE_FOLDER)
-                        .Document(itemcheck_clicked.itemId)
-                        .UpdateAsync("isMemorized", false);
+                        .Document(itemcheck_clicked.itemId);
+            if (itemcheck_clicked.isMemorized)
+            {
+                await doctoupdate.UpdateAsync("memorized", false);
             }
             else
             {
-                await CrossCloudFirestore.Current
-                        .Instance
-                        .Collection("Users")
-                        .Document(CrossFirebaseAuth.Current.Instance.CurrentUser.Uid)
-                        .Collection("Exams")
-                        .Document(examId)
-                        .Collection(STORAGE_FOLDER)
-                        .Document(itemcheck_clicked.itemId)
-                        .UpdateAsync("isMemorized", true);
+                await doctoupdate.UpdateAsync("memorized", true);
             }
         }
 

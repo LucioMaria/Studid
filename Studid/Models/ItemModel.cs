@@ -22,13 +22,13 @@ namespace Studid.Models
             this.isMemorized = false;
         }
 
-        [Id]
+        [MapTo("itemId")]
         public string itemId { get; set; }
 
         [MapTo("itemName")]
         public string itemName { get; set; }
         
-        [MapTo("isMemorized")]
+        [MapTo("memorized")]
         public bool isMemorized { get; set; }
         public int CompareTo(object obj)
         {
