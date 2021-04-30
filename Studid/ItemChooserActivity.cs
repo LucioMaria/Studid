@@ -55,8 +55,7 @@ namespace Studid
                 examId = extras.GetString("exam_id");
                 examCfu = extras.GetInt("exam_cfu");
                 examDate = new Date(extras.GetString("exam_date"));
-                Bundle bundle = new Bundle(); 
-                bundle.PutString("exam_name", examName);
+                Bundle bundle = new Bundle();
                 bundle.PutString("exam_id", examId);
                 fragmentFlashcards.Arguments = bundle;
                 fragmentRecordings.Arguments = bundle;
@@ -117,20 +116,20 @@ namespace Studid
             switch (e.Item.ItemId)
             {
                 case Resource.Id.botmenu_recordings:
-                    //selectedFragment = fragmentRecordings;
-                    //fileType = "audio/*";
+                    selectedFragment = fragmentRecordings;
+                    fileType = "audio/*";
                     break;
                 case Resource.Id.botmenu_cmaps:
-                    //selectedFragment = fragmentCmaps;
-                    //fileType = "image/*";
+                    selectedFragment = fragmentCmaps;
+                    fileType = "image/*";
                     break;
                 case Resource.Id.botmenu_exercise:
-                    //selectedFragment = fragmentExercise;
-                    //fileType = "application/pdf";
+                    selectedFragment = fragmentExercise;
+                    fileType = "application/pdf";
                     break;
                 default:
-                    //selectedFragment = fragmentFlashcards;
-                    //fileType = "application/pdf";
+                    selectedFragment = fragmentFlashcards;
+                    fileType = "application/pdf";
                     break;
             }
             if (selectedFragment != null)

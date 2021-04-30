@@ -1,5 +1,5 @@
 <resources>
-	<string name="app_name" translatable="false">Studied!</string>
+	<string name="app_name" translatable="false">Studid</string>
 	<string name="bottomnav_flash">Flashcards</string>
 	<string name="bottomnav_recordings">Recordings</string>
 	<string name="bottomnav_cmaps">Concept map</string>

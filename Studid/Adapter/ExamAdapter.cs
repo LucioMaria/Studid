@@ -7,6 +7,10 @@ using Java.Text;
 using Java.Util;
 using AndroidX.RecyclerView.Widget;
 using Studid.Models;
+using AndroidX.CardView.Widget;
+using Android.Graphics;
+using AndroidX.Core.Content;
+using Android.Util;
 
 namespace Studid.Adapter
 {
@@ -45,11 +49,26 @@ namespace Studid.Adapter
             holder.examId = exam.examId;
             holder.examNameTV.Text = exam.examName;
             DateFormat df = new SimpleDateFormat("dd/MM/yy", Locale.Italy);
-            Date mydate = new Date(exam.date.ToDateTime().ToLongDateString());
-            string fdate = df.Format(mydate);
-            holder.examDateTV.Text = fdate;
-            String cfuString = ExamList[position].cfu + "";
-            holder.cfuButton.Text = cfuString;
+            Date examDate = new Date(exam.date.ToDateTime().ToLongDateString());
+            holder.examDateTV.Text = df.Format(examDate);
+            var result = exam.date.ToDateTime()-DateTime.Today;
+            if (result.Days >= 0 && result.Days <= 2)
+            {
+                holder.card.SetCardBackgroundColor(new Color(ContextCompat.GetColor(context, Resource.Color.colorAccent)));
+            }
+            else if (result.Days >= 15)
+            {
+                holder.card.SetCardBackgroundColor(new Color(ContextCompat.GetColor(context, Resource.Color.colorPrimarylight)));
+            }
+            else if (result.Days > 2)
+            {
+                holder.card.SetCardBackgroundColor(new Color(ContextCompat.GetColor(context, Resource.Color.colorPrimaryDark)));
+            }
+            else if (result.Days < 0)
+            {
+                holder.card.SetCardBackgroundColor(new Color(ContextCompat.GetColor(context, Resource.Color.colorIcons)));
+            }
+            holder.cfuButton.Text = ExamList[position].cfu + "";
         }
 
         public override int ItemCount => ExamList.Count;
@@ -63,6 +82,7 @@ namespace Studid.Adapter
 
     public class ExamViewHolder : RecyclerView.ViewHolder
     {
+        public CardView card;
         public TextView examNameTV { get; set; }
         public TextView examDateTV { get; set; }
         public Button cfuButton { get; set; }
@@ -75,6 +95,7 @@ namespace Studid.Adapter
         {
             //TextView = v;
             int position = AdapterPosition;
+            card = (CardView)itemView.FindViewById(Resource.Id.exam_row_cv);
             examNameTV = (TextView)itemView.FindViewById(Resource.Id.exam_name_tv);
             examDateTV = (TextView)itemView.FindViewById(Resource.Id.exam_date_tv);
             cfuButton = (Button)itemView.FindViewById(Resource.Id.exam_cfu_button);

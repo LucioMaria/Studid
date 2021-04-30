@@ -30,9 +30,10 @@ namespace Studid.Fragments
 {
     public class FragmentFlashcards : Fragment, AddItemDialog.OnInputSelected,IOnProgressListener, IOnSuccessListener, IOnFailureListener
     {
-        private static System.String FILE_TYPE = "application/pdf";
-        private static System.String STORAGE_FOLDER = "Flashcards";
-        private String examname, examId;
+        private static readonly String FILE_TYPE = "application/pdf";
+        private static readonly String STORAGE_FOLDER = "Flashcards";
+
+        private String examId;
         private RecyclerView recyclerView;
         private ItemAdapter itemAdapter;
         private ContentLoadingProgressBar progressIndicator;
@@ -45,7 +46,6 @@ namespace Studid.Fragments
         public override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-            examname = Arguments.GetString("exam_name");
             examId = Arguments.GetString("exam_id");
             storageRef = FirebaseStorage.Instance.Reference;
         }
@@ -126,7 +126,7 @@ namespace Studid.Fragments
             itemTouchHelper.AttachToRecyclerView(recyclerView);
         }
 
-        private async void AdapterItem_Item_SelectClick(object sender, ItemAdapterClickEventArgs e)
+        private void AdapterItem_Item_SelectClick(object sender, ItemAdapterClickEventArgs e)
         {
             storagePath = new File(this.Activity.GetExternalFilesDir(Android.OS.Environment.DirectoryDocuments), examId + "/" + STORAGE_FOLDER);
             if (!storagePath.Exists())
@@ -136,21 +136,23 @@ namespace Studid.Fragments
             fileToOpen = new File(storagePath, itemAdapter.ItemList[e.Position].itemId);
             if (fileToOpen.Exists())
             {
-                fileOpener(fileToOpen);
+                FileOpener(fileToOpen);
             }
-            else if (isOnline(this.Activity))
+            else if (IsOnline(this.Activity))
             {
                 StorageReference FileRef = storageRef.Child(user.Uid + "/" + examId + "/" + STORAGE_FOLDER + "/" + itemAdapter.ItemList[e.Position].itemId);
                 FileRef.GetFile(fileToOpen).AddOnProgressListener(this).AddOnSuccessListener(this).AddOnFailureListener(this);
             }
             else{
-                Toast.MakeText(this.Context, "you need to be online",ToastLength.Short).Show();
+                AlertDialog.Builder alert = new AlertDialog.Builder(this.Context);
+                alert.SetTitle(Resource.String.connection_title)
+                        .SetMessage(Resource.String.connection_message)
+                        .Show();
             }
         }
 
         private async void AdapterItem_Item_CheckClick(object sender, ItemAdapterClickEventArgs e)
         {
-            FirebaseUser user = FirebaseAuth.Instance.CurrentUser;
             ItemModel itemcheck_clicked = itemAdapter.ItemList[e.Position];
             if (itemcheck_clicked.isMemorized)
             {
@@ -181,20 +183,18 @@ namespace Studid.Fragments
 
         private void AdapterItem_ItemUpdate_NameClick(object sender, ItemAdapterClickEventArgs e)
         {
-            FirebaseUser user = FirebaseAuth.Instance.CurrentUser;
             ItemModel itemname_clicked = itemAdapter.ItemList[e.Position];
             string itemname = itemname_clicked.itemName;
             Dialog nameDialog = new Dialog(this.Context);
             nameDialog.SetContentView(Resource.Layout.dialog_name_update);
             EditText editText = (EditText)nameDialog.FindViewById(Resource.Id.dialog_name_editText);
             editText.Text = itemname;
-            /* Non riconosce più android.support.design e quindi ho messo il design che sta in google.design*/
             TextInputLayout textInputLayout = (TextInputLayout)nameDialog.FindViewById(Resource.Id.dialog_name_input_layout);
             nameDialog.Show();
             Android.Widget.Button okButton = (Android.Widget.Button)nameDialog.FindViewById(Resource.Id.name_ok);
             Android.Widget.Button cancelButton = (Android.Widget.Button)nameDialog.FindViewById(Resource.Id.name_cancel);
             okButton.Click += async delegate
-            {// need to put srting in strings.xml
+            {
                 string itemNameNew = editText.Text.ToUpper().Trim();
                 if (itemNameNew.Equals(""))
                 {
@@ -243,33 +243,48 @@ namespace Studid.Fragments
         }
         public AddItemDialog.OnInputSelected.nameState sendInput(string filename, Android.Net.Uri fileuri)
         {
-            if (IsSameName(filename))
+            if (IsOnline(this.Context))
             {
-                return AddItemDialog.OnInputSelected.nameState.USED;
-            }
-            else if (user != null && isOnline(this.Context))
-            {
-                this.filename = filename;
-                itemId = Guid.NewGuid().ToString();
-                storageRef.Child(user.Uid + "/" + examId + "/" + STORAGE_FOLDER + "/" + itemId)
-                    .PutFile(fileuri)
-                    .AddOnProgressListener(this)
-                    .AddOnSuccessListener(this)
-                    .AddOnFailureListener(this);
-                return AddItemDialog.OnInputSelected.nameState.OK;
+                if (user != null)
+                {
+                    if (!IsSameName(filename))
+                    {
+                        this.filename = filename;
+                        itemId = Guid.NewGuid().ToString();
+                        storageRef.Child(user.Uid + "/" + examId + "/" + STORAGE_FOLDER + "/" + itemId)
+                            .PutFile(fileuri)
+                            .AddOnProgressListener(this)
+                            .AddOnSuccessListener(this)
+                            .AddOnFailureListener(this);
+                        return AddItemDialog.OnInputSelected.nameState.OK;
+                    }
+                    else
+                    {
+                        return AddItemDialog.OnInputSelected.nameState.USED;
+                    }
+
+                }
+                else
+                {
+                    AlertDialog.Builder alert = new AlertDialog.Builder(this.Context);
+                    alert.SetTitle(Resource.String.login_title)
+                            .SetMessage(Resource.String.alert_login)
+                            .Show();
+                    return AddItemDialog.OnInputSelected.nameState.H_ERROR;
+                }
             }
             else
             {
                 AlertDialog.Builder alert = new AlertDialog.Builder(this.Context);
-                alert.SetTitle("Login and connection reqired")
-                        .SetMessage("you need to be online and logged in to perform this action");
-                alert.Show();
+                alert.SetTitle(Resource.String.connection_title)
+                        .SetMessage(Resource.String.connection_message)
+                        .Show();
                 return AddItemDialog.OnInputSelected.nameState.H_ERROR;
-            }   
+            }
         }
 
         //launching intent for file opening
-        private void fileOpener(File file)
+        private void FileOpener(File file)
         {
             Android.Net.Uri uri = FileProvider.GetUriForFile(this.Context, this.Context.PackageName + ".provider",file);
             Intent openfile = new Intent(Intent.ActionView);
@@ -280,7 +295,7 @@ namespace Studid.Fragments
         }
 
         //checking if there is connection
-        private bool isOnline(Context context)
+        private bool IsOnline(Context context)
         {
             ConnectivityManager cm = (ConnectivityManager)context.GetSystemService(Context.ConnectivityService);
             NetworkInfo netInfo = cm.ActiveNetworkInfo;
@@ -300,7 +315,7 @@ namespace Studid.Fragments
                 .SetAsync(new ItemModel(itemId, filename));
             }
             if (result is FileDownloadTask.TaskSnapshot)
-                fileOpener(fileToOpen);  
+                FileOpener(fileToOpen);  
         }
 
         public void OnFailure(Java.Lang.Exception e)
