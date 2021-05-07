@@ -2,11 +2,12 @@
 using Android.Views;
 using Android.Widget;
 using System.Collections.Generic;
-using Android.Content;
 using Java.Text;
 using Java.Util;
 using AndroidX.RecyclerView.Widget;
 using Studid.Models;
+using Android.Content;
+using Bumptech.Glide;
 
 namespace Studid.Adapter
 {
@@ -51,13 +52,26 @@ namespace Studid.Adapter
             holder.itemId = item.itemId;
             holder.textView.Text = item.itemName;
             holder.check.Checked = item.isMemorized;
-            if (holder.check.Checked)
+            if (item.isPlaying)
             {
-                holder.chekedText.Visibility = ViewStates.Visible;
+                holder.selectItem.SetImageResource(Resource.Drawable.ic_baseline_stop_24);
             }
             else
             {
-                holder.chekedText.Visibility = ViewStates.Invisible;
+                holder.selectItem.SetImageResource(Resource.Drawable.ic_baseline_arrow_forward_ios_24);
+            }
+            if (holder.check.Checked)
+            {
+                holder.check.Text = context.Resources.GetString(Resource.String.memorized);
+            }
+            else
+            {
+                holder.check.Text = "";
+            }
+            if (item.picUrl != null)
+            {
+                holder.ItemPicture.Visibility= ViewStates.Visible;
+                Glide.With(context).Load(item.picUrl).Into(holder.ItemPicture);
             }
         }
 
@@ -74,9 +88,9 @@ namespace Studid.Adapter
     public class ItemViewHolder : RecyclerView.ViewHolder
     {
         public TextView textView { get; set; }
-        public TextView chekedText { get; set; }
-        public CheckBox check { get; set; }
+        public CheckedTextView check;
         public ImageButton selectItem { get; set; }
+        public ImageView ItemPicture;
 
         public string itemId;
 
@@ -85,9 +99,9 @@ namespace Studid.Adapter
                             Action<ItemAdapterClickEventArgs> longClickListener, Action<ItemAdapterClickEventArgs> nameClickListener, Action<ItemAdapterClickEventArgs> checkClickListener, Action<ItemAdapterClickEventArgs> selectClickListener) : base(itemView)
         {
             textView = (TextView)itemView.FindViewById(Resource.Id.textView);
-            check = (CheckBox)itemView.FindViewById(Resource.Id.check);
-            chekedText = (TextView)itemView.FindViewById(Resource.Id.checktext);
+            check = (CheckedTextView)itemView.FindViewById(Resource.Id.check);
             selectItem = (ImageButton)itemView.FindViewById(Resource.Id.select_arrow);
+            ItemPicture = (ImageView)itemView.FindViewById(Resource.Id.item_pic);
             textView.Click += (sender, e) => nameClickListener(new ItemAdapterClickEventArgs { View = itemView, Position = AdapterPosition });
             check.Click += (sender, e) => checkClickListener(new ItemAdapterClickEventArgs { View = itemView, Position = AdapterPosition });
             selectItem.Click += (sender, e) => selectClickListener(new ItemAdapterClickEventArgs { View = itemView, Position = AdapterPosition });

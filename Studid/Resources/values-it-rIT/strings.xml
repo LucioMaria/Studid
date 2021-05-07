@@ -9,7 +9,7 @@
 	<string name="dialog_uri_text">Uri</string>
 	<string name="dialog_button_search">Cerca File</string>
 	<string name="dialog_button_cancel">Annulla</string>
-	<string name="dialog_exam_title">Inserisci il nome dell esame</string>
+	<string name="dialog_exam_title">Inserisci il nome dell\' esame</string>
 	<string name="dialog_cancel_title">Cancellare l\' elemento?</string>
 	<string name="dialog_cancel_message">tutti i dati saranno cancellati</string>
 	<string name="missing_file">Il file selezionato è stato cancellato o spostato</string>
@@ -24,4 +24,22 @@
 	<string name="connection_message">Devi essere online per effettuare questa azione</string>
 	<string name="login_title">Login Necessario</string>
 	<string name="dialog_name_update">Aggiorna il nome</string>
+	<string name="welcome_message">Benvenuto!</string>
+	<string name="cfu_update">Quanti CFU?</string>
+	<string name="please_select_a_date">Perfavore seleziona una data</string>
+	<string name="no_recording_found">Perfavore inizia la registrazione</string>
+	<string name="welcome_msg">Benvenuto in Studid!</string>
+	<string name="no_picture_found">Perfavore fai una foto</string>
+	<string name="memorized">Memorizzato!</string>
+	<string name="memorized_tip">Hai memorizzato questo item?</string>
+	<string name="add_exam_tip">Aggiungi un esame</string>
+	<string name="swipe_delete_tip">Swipe a sinistra per cancellare</string>
+	<string name="exam_name_tip">Nome dell esame, clicca per cambiarlo</string>
+	<string name="exam_date_tip">"Data dell esame, clicca per cambiarla "</string>
+	<string name="exam_cfu_tip">CFU dell esame, clicca per camiarli</string>
+	<string name="open_file_tip">Apri il file associato</string>
+	<string name="item_name_tip">Nome dell item, clicca per cambiarlo</string>
+	<string name="add_a_file_tip">Aggiungi un file</string>
+	<string name="start_recording_tip">Comincia a registrare dall\'app</string>
+	<string name="take_picture_tip">Fai una foto</string>
 </resources>

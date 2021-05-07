@@ -1,6 +1,7 @@
 ﻿using Android.App;
 using Android.Content;
 using Android.Gms.Tasks;
+using Android.Media;
 using Android.Net;
 using Android.OS;
 using Android.Runtime;
@@ -28,10 +29,11 @@ using Fragment = AndroidX.Fragment.App.Fragment;
 
 namespace Studid.Fragments
 {
-    public class FragmentRecordings : Fragment, AddItemDialog.OnInputSelected, IOnProgressListener, IOnSuccessListener, IOnFailureListener
+    public class FragmentRecordings : Fragment, AddItemDialog.OnInputSelected, IOnProgressListener, IOnSuccessListener, IOnFailureListener, MediaPlayer.IOnCompletionListener
     {
         private static readonly String FILE_TYPE = "audio/*";
         private static readonly String STORAGE_FOLDER = "Recordings";
+        private static MediaPlayer mediaPlayer = null;
 
         private String examId;
         private RecyclerView recyclerView;
@@ -39,6 +41,7 @@ namespace Studid.Fragments
         private ContentLoadingProgressBar progressIndicator;
         private FirebaseUser user;
         private File storagePath, fileToOpen;
+        private int adapterPosition;
 
         private StorageReference storageRef;
         String itemId, filename;
@@ -128,6 +131,7 @@ namespace Studid.Fragments
 
         private void AdapterItem_Item_SelectClick(object sender, ItemAdapterClickEventArgs e)
         {
+            adapterPosition = e.Position;
             storagePath = new File(this.Activity.GetExternalFilesDir(Android.OS.Environment.DirectoryDocuments), examId + "/" + STORAGE_FOLDER);
             if (!storagePath.Exists())
             {
@@ -136,7 +140,7 @@ namespace Studid.Fragments
             fileToOpen = new File(storagePath, itemAdapter.ItemList[e.Position].itemId);
             if (fileToOpen.Exists())
             {
-                fileOpener(fileToOpen);
+                startAudio(fileToOpen, e.Position);
             }
             else if (isOnline(this.Activity))
             {
@@ -288,6 +292,49 @@ namespace Studid.Fragments
             StartActivity(intent1);
         }
 
+        private void startAudio(File fileToOpen, int adapterPosition)
+        {
+            if (mediaPlayer != null) {
+                mediaPlayer.Stop();
+                mediaPlayer.Release();
+                mediaPlayer = null;
+                if (itemAdapter.ItemList[adapterPosition].isPlaying)
+                {
+                    itemAdapter.ItemList[adapterPosition].isPlaying = false;
+                    itemAdapter.NotifyItemChanged(adapterPosition);
+                    return;
+                }
+                foreach (ItemModel item in itemAdapter.ItemList)
+                {
+                    item.isPlaying = false;
+                }
+                itemAdapter.NotifyDataSetChanged();
+            }
+            itemAdapter.ItemList[adapterPosition].isPlaying = true;
+            itemAdapter.NotifyItemChanged(adapterPosition);
+            mediaPlayer = new MediaPlayer();
+            try
+            {
+                mediaPlayer.SetDataSource(fileToOpen.AbsolutePath);
+                mediaPlayer.Prepare();
+                mediaPlayer.Start();
+            }
+            catch (IOException e)
+            {
+                Log.Error("record Opener error", fileToOpen.AbsolutePath);
+            }
+            mediaPlayer.SetOnCompletionListener(this);
+        }
+        public void OnCompletion(MediaPlayer mp)
+        {
+            itemAdapter.ItemList[adapterPosition].isPlaying = false;
+            itemAdapter.NotifyItemChanged(adapterPosition);
+            mediaPlayer.Stop();
+            mediaPlayer.Release();
+            mediaPlayer = null;
+        }
+
+
         //checking if there is connection
         private bool isOnline(Context context)
         {
@@ -309,8 +356,9 @@ namespace Studid.Fragments
                 .SetAsync(new ItemModel(itemId, filename));
             }
             if (result is FileDownloadTask.TaskSnapshot)
-                fileOpener(fileToOpen);
+                startAudio(fileToOpen,adapterPosition);
         }
+
 
         public void OnFailure(Java.Lang.Exception e)
         {

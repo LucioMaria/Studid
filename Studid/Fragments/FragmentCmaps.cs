@@ -40,6 +40,7 @@ namespace Studid.Fragments
         private File storagePath, fileToOpen;
 
         private StorageReference storageRef;
+        private StorageReference storagefolder;
         String itemId, filename;
 
         public override void OnCreate(Bundle savedInstanceState)
@@ -244,7 +245,8 @@ namespace Studid.Fragments
                     {
                         this.filename = filename;
                         itemId = Guid.NewGuid().ToString();
-                        storageRef.Child(user.Uid + "/" + examId + "/" + STORAGE_FOLDER + "/" + itemId)
+                        storagefolder = storageRef.Child(user.Uid + "/" + examId + "/" + STORAGE_FOLDER + "/" + itemId);
+                        storagefolder
                             .PutFile(fileuri)
                             .AddOnProgressListener(this)
                             .AddOnSuccessListener(this)
@@ -305,7 +307,7 @@ namespace Studid.Fragments
                 .Collection("Users").Document(user.Uid)
                 .Collection("Exams").Document(examId)
                 .Collection(STORAGE_FOLDER).Document(itemId)
-                .SetAsync(new ItemModel(itemId, filename));
+                .SetAsync(new ItemModel(itemId, filename, storagefolder.GetDownloadUrl().ToString()));
             }
             if (result is FileDownloadTask.TaskSnapshot)
                 FileOpener(fileToOpen);

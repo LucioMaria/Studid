@@ -18,6 +18,8 @@ using Android.Util;
 using Xamarin.Essentials;
 using Google.Android.Material.TextField;
 using Java.IO;
+using Android.Graphics.Drawables;
+using Android.Graphics;
 
 namespace Studid.Dialogs
 {
@@ -47,6 +49,8 @@ namespace Studid.Dialogs
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
             View view = inflater.Inflate(Resource.Layout.dialog_add_item, container, false);
+            Dialog.Window.SetBackgroundDrawable(new ColorDrawable(Color.Transparent));
+
 
             addItemInputLayout = (TextInputLayout)view.FindViewById(Resource.Id.dialog_name_input_layout);
             itemUriTV = (TextView)view.FindViewById(Resource.Id.dialog_uri_tv);

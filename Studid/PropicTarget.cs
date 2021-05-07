@@ -45,11 +45,10 @@ namespace Studid
                 if (user != null)
                 {
                     Glide.With(context)
-                            .AsBitmap()
-                            .Load(user.PhotoUrl)
-                            .CenterCrop()
-                            .CircleCrop()
-                            .Into(new PropicTarget(menuItem));
+                        .AsBitmap()
+                        .Load(user.PhotoUrl)
+                        .CenterCrop()
+                        .Into(new PropicTarget(menuItem));
                 }
                 else
                 {

@@ -75,13 +75,15 @@
     <Reference Include="System.Numerics.Vectors" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dialogs\TakePicDialog.cs" />
+    <Compile Include="Dialogs\TakeRecDialog.cs" />
     <Compile Include="ItemChooserActivity.cs" />
     <Compile Include="Adapter\ExamAdapter.cs" />
     <Compile Include="Adapter\ItemAdapter.cs" />
     <Compile Include="PropicTarget.cs" />
     <Compile Include="Dialogs\AddExamDialog.cs" />
     <Compile Include="Dialogs\AddItemDialog.cs" />
-    <Compile Include="Dialogs\LoginDialog.cs" />
+    <Compile Include="LoginActivity.cs" />
     <Compile Include="ExamChooserActivity.cs" />
     <Compile Include="Fragments\FragmentCmaps.cs" />
     <Compile Include="Fragments\FragmentExercises.cs" />
@@ -207,11 +209,6 @@
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout\dialog_login.axml">
-      <SubType>Designer</SubType>
-    </AndroidResource>
-  </ItemGroup>
-  <ItemGroup>
     <AndroidResource Include="Resources\layout\dialog_name_update.axml">
       <SubType>Designer</SubType>
     </AndroidResource>
@@ -315,6 +312,39 @@
     <AndroidResource Include="Resources\layout\activity_item_chooser.xml">
       <SubType>Designer</SubType>
     </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\ic_baseline_mic_50.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\ic_baseline_mic_60.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\ic_baseline_stop_24.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\ic_checked_check_box_24.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\ic_uncheked_check_box_24.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\shape_curved_top.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\ic_baseline_add_a_photo_24.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\dialog_rounded_bg.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\dialog_take_rec.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\dialog_take_pic.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\activity_login.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

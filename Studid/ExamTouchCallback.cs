@@ -24,6 +24,7 @@ using Google.Android.Material.Dialog;
 using Android.Net;
 using AlertDialog = AndroidX.AppCompat.App.AlertDialog;
 using Plugin.FirebaseAuth;
+using Android.Util;
 
 namespace Studid
 {
@@ -56,14 +57,20 @@ namespace Studid
                     alertDialog.SetMessage(Resource.String.dialog_cancel_message);
                     alertDialog.SetPositiveButton("Ok", async delegate
                     {
-                        await CrossCloudFirestore.Current
-                             .Instance
-                             .Collection("Users")
-                             .Document(user.Uid)
-                             .Collection("Exams")
-                             .Document(holder.examId)
-                             .DeleteAsync();
+                        var exam = CrossCloudFirestore.Current
+                              .Instance
+                              .Collection("Users")
+                              .Document(user.Uid)
+                              .Collection("Exams")
+                              .Document(holder.examId);
+
                         var storageref = FirebaseStorage.Instance.Reference;
+
+                        deleteFirestoreCollection(exam.Collection("Flashcards"));
+                        deleteFirestoreCollection(exam.Collection("Recordings"));
+                        deleteFirestoreCollection(exam.Collection("Cmaps"));
+                        deleteFirestoreCollection(exam.Collection("Exercises"));
+
                         deleteStorageBuket(storageref.Child(user.Uid + "/" + holder.examId + "/"+"Flashcards"));
                         deleteStorageBuket(storageref.Child(user.Uid + "/" + holder.examId + "/" + "Recordings"));
                         deleteStorageBuket(storageref.Child(user.Uid + "/" + holder.examId + "/" + "Cmaps"));
@@ -122,6 +129,15 @@ namespace Studid
             NetworkInfo netInfo = cm.ActiveNetworkInfo;
             //should check null because in airplane mode it will be null
             return (netInfo != null && netInfo.IsConnected);
+        }
+        private async void deleteFirestoreCollection(ICollectionReference collectionReference)
+        {
+            var result = await collectionReference.GetAsync();
+            foreach (var document in result.Documents)
+            {
+                Log.Verbose("firestore delete: ", document.Id);
+                await document.Reference.DeleteAsync();
+            }
         }
 
         void deleteStorageBuket(StorageReference storageRef)

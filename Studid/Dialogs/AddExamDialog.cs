@@ -23,6 +23,8 @@ using DialogFragment = AndroidX.Fragment.App.DialogFragment;
 using Android.Text.Format;
 using Java.Text;
 using Plugin.FirebaseAuth;
+using Android.Graphics;
+using Android.Graphics.Drawables;
 
 namespace Studid.Dialogs
 {
@@ -42,8 +44,9 @@ namespace Studid.Dialogs
         }
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
-
             View view = inflater.Inflate(Resource.Layout.dialog_add_exam, container, false);
+            Dialog.Window.SetBackgroundDrawable(new ColorDrawable(Color.Transparent));
+
             addexamnameText = (EditText)view.FindViewById(Resource.Id.dialog_name_editText);
             addexaminputlayout = (TextInputLayout)view.FindViewById(Resource.Id.dialog_name_input_layout);
             Calendar calendar = Calendar.GetInstance(Locale.Italy);

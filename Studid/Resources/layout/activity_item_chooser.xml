@@ -43,7 +43,9 @@
         android:id="@+id/item_fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:background="@drawable/shape_curved_top"
+        android:layout_marginTop="-16dp"/>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation_i"
@@ -63,6 +65,37 @@
         android:src="@drawable/ic_add_black_24dp"
         android:tint="@color/colorIcons"
         app:layout_anchor="@+id/item_fragment_container"
-        app:layout_anchorGravity="end|bottom" />
+        app:layout_anchorGravity="end|bottom"         
+        android:tooltipText="@string/add_a_file_tip"/>
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/record_button_m"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="140dp"
+        android:background="@drawable/button_roundshape_accent"
+        android:elevation="2dp"
+        android:src="@drawable/ic_baseline_mic_50"
+        android:tint="@color/colorIcons"
+        app:layout_anchor="@+id/item_fragment_container"
+        app:layout_anchorGravity="end|bottom"
+        android:visibility="gone"
+        android:tooltipText="@string/start_recording_tip"/>/>
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/picture_button_m"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="140dp"
+        android:background="@drawable/button_roundshape_accent"
+        android:elevation="2dp"
+        android:src="@drawable/ic_baseline_add_a_photo_24"
+        android:tint="@color/colorIcons"
+        app:layout_anchor="@+id/item_fragment_container"
+        app:layout_anchorGravity="end|bottom"
+        android:visibility="gone"        
+        android:tooltipText="@string/take_picture_tip"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

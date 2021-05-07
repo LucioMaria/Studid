@@ -10,22 +10,39 @@
 	<string name="dialog_button_search">Search file</string>
 	<string name="dialog_button_ok" translatable="false">OK</string>
 	<string name="dialog_button_cancel">Cancel</string>
-	<string name="dialog_exam_title">enter the name</string>
+	<string name="dialog_exam_title">Enter the exam name</string>
 	<string name="dialog_cancel_title">Delete the item?</string>
 	<string name="dialog_cancel_message">all the data will be deleted</string>
 	<string name="missing_file">The selected file was deleted or replaced</string>
 	<string name="empty_name_field">Please fill the name field</string>
 	<string name="isMemorized_checkbox">Memorized?</string>
 	<string name="empty_file_field">Please choose a file</string>
+	<string name="server_client_id" translatable="false">152337408575-ss0r3akabfenpbdcbrbk3c0b0vdp2l70.apps.googleusercontent.com</string>
 	<string name="logout" translatable="false">Logout</string>
-	<string name="alert_login">You need to be logged in in order to use this app.</string>
+	<string name="alert_login">You need to be signed in in order to use this app.</string>
 	<string name="openfile_chooser">Open with</string>
-	<string name="overflow_name_field">please 20 caracter max</string>
+	<string name="overflow_name_field">please 10 caracter max</string>
 	<string name="used_name">Name already used</string>
 	<string name="connection_title">Connection required</string>
 	<string name="connection_message">you need to be online to perform this action</string>
 	<string name="login_title">Login required</string>
 	<string name="dialog_name_update">Update the name</string>
-
-	<string name="server_client_id" translatable="false">152337408575-ss0r3akabfenpbdcbrbk3c0b0vdp2l70.apps.googleusercontent.com</string>
+	<string name="welcome_message">Welcome!</string>
+	<string name="cfu_update">How many CFU?</string>
+	<string name="please_select_a_date">Please select a date</string>
+	<string name="no_recording_found">Please start recording</string>
+	<string name="welcome_msg">Welcome to Studid!</string>
+	<string name="no_picture_found">Please take a photo</string>
+	<string name="memorized">Memorized!</string>
+	<string name="memorized_tip">Have you memorized this item?</string>
+	<string name="add_exam_tip">Add a new exam</string>
+	<string name="swipe_delete_tip">swipe left to delete</string>
+	<string name="exam_name_tip">Name of the exam, click to change</string>
+	<string name="exam_date_tip">Date of the exam, click to change</string>
+	<string name="exam_cfu_tip">CFU of the exam, click to change</string>
+	<string name="open_file_tip">Open associated file</string>
+	<string name="item_name_tip">Item name ,click to change</string>
+    <string name="add_a_file_tip">Add a file</string>
+    <string name="start_recording_tip">Start in-app recording</string>
+    <string name="take_picture_tip">Take a picture</string>
 </resources>

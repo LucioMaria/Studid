@@ -76,9 +76,8 @@ namespace Studid
         {
             if (item.ItemId == Resource.Id.action_login)
             {
-                LoginDialog loginDialog = new LoginDialog();
-                var transaction = SupportFragmentManager.BeginTransaction();
-                loginDialog.Show(transaction, "login_dialog");
+                Intent intent = new Intent(this, typeof(LoginActivity));
+                StartActivity(intent);
                 return base.OnOptionsItemSelected(item);
             }
             return false;
@@ -203,6 +202,7 @@ namespace Studid
                 string examId = examname_clicked.examId;
                 Dialog cfuDialog = new Dialog(this);
                 cfuDialog.SetContentView(Resource.Layout.dialog_exam_cfu);
+                cfuDialog.Window.SetBackgroundDrawable(new ColorDrawable(Android.Graphics.Color.Transparent));
                 NumberPicker numberPicker = (NumberPicker)cfuDialog.FindViewById(Resource.Id.cfu_numpic);
                 numberPicker.MinValue = 0;
                 numberPicker.MaxValue = 25;
@@ -242,6 +242,7 @@ namespace Studid
                 Dialog calendardialog = new Dialog(this);
                 Calendar calendar = Calendar.GetInstance(Locale.Italy);
                 calendardialog.SetContentView(Resource.Layout.dialog_exam_date);
+                calendardialog.Window.SetBackgroundDrawable(new ColorDrawable(Android.Graphics.Color.Transparent));
                 calendardialog.Show();
                 CalendarView calendarview = (CalendarView)calendardialog.FindViewById(Resource.Id.calendarView);
                 calendarview.MinDate = calendar.TimeInMillis;
@@ -285,6 +286,7 @@ namespace Studid
                 string examId = examname_clicked.examId;
                 Dialog nameDialog = new Dialog(this);
                 nameDialog.SetContentView(Resource.Layout.dialog_name_update);
+                nameDialog.Window.SetBackgroundDrawable(new ColorDrawable(Android.Graphics.Color.Transparent));
                 EditText editText = (EditText)nameDialog.FindViewById(Resource.Id.dialog_name_editText);
                 editText.Text = examname_clicked.examName;
                 TextInputLayout textInputLayout = (TextInputLayout)nameDialog.FindViewById(Resource.Id.dialog_name_input_layout);
@@ -338,16 +340,18 @@ namespace Studid
         }
         private void alertLogin()
         {
-            AlertDialog.Builder alert = new AlertDialog.Builder(this);
-            alert.SetTitle(Resource.String.login_title)
-                    .SetMessage(Resource.String.alert_login);
-            alert.SetPositiveButton("Ok", (senderAlert, args)=>
-            {
-                LoginDialog loginDialog = new LoginDialog();
-                loginDialog.Show(SupportFragmentManager.BeginTransaction(), "login_dialog");
-                alert.Dispose();
-            });
-            alert.Show();           
+            Intent intent = new Intent(this, typeof(LoginActivity));
+            StartActivity(intent);
+            //AlertDialog.Builder alert = new AlertDialog.Builder(this);
+            //alert.SetTitle(Resource.String.login_title)
+            //        .SetMessage(Resource.String.alert_login);
+            //alert.SetPositiveButton("Ok", (senderAlert, args)=>
+            //{
+            //    Intent intent = new Intent(this, typeof(LoginActivity));
+            //    StartActivity(intent);
+            //    alert.Dispose();
+            //});
+            //alert.Show();           
         }
     }
 }
