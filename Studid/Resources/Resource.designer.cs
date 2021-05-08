@@ -16020,31 +16020,34 @@ namespace Studid
 			public const int project_id = 2131689638;
 			
 			// aapt resource value: 0x7F0F00A7
-			public const int search_menu_title = 2131689639;
+			public const int save_btn = 2131689639;
 			
 			// aapt resource value: 0x7F0F00A8
-			public const int server_client_id = 2131689640;
+			public const int search_menu_title = 2131689640;
 			
 			// aapt resource value: 0x7F0F00A9
-			public const int start_recording_tip = 2131689641;
+			public const int server_client_id = 2131689641;
 			
 			// aapt resource value: 0x7F0F00AA
-			public const int status_bar_notification_info_overflow = 2131689642;
+			public const int start_recording_tip = 2131689642;
 			
 			// aapt resource value: 0x7F0F00AB
-			public const int swipe_delete_tip = 2131689643;
+			public const int status_bar_notification_info_overflow = 2131689643;
 			
 			// aapt resource value: 0x7F0F00AC
-			public const int take_picture_tip = 2131689644;
+			public const int swipe_delete_tip = 2131689644;
 			
 			// aapt resource value: 0x7F0F00AD
-			public const int used_name = 2131689645;
+			public const int take_picture_tip = 2131689645;
 			
 			// aapt resource value: 0x7F0F00AE
-			public const int welcome_message = 2131689646;
+			public const int used_name = 2131689646;
 			
 			// aapt resource value: 0x7F0F00AF
-			public const int welcome_msg = 2131689647;
+			public const int welcome_message = 2131689647;
+			
+			// aapt resource value: 0x7F0F00B0
+			public const int welcome_msg = 2131689648;
 			
 			static String()
 			{

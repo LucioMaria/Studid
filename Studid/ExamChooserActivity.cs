@@ -342,16 +342,6 @@ namespace Studid
         {
             Intent intent = new Intent(this, typeof(LoginActivity));
             StartActivity(intent);
-            //AlertDialog.Builder alert = new AlertDialog.Builder(this);
-            //alert.SetTitle(Resource.String.login_title)
-            //        .SetMessage(Resource.String.alert_login);
-            //alert.SetPositiveButton("Ok", (senderAlert, args)=>
-            //{
-            //    Intent intent = new Intent(this, typeof(LoginActivity));
-            //    StartActivity(intent);
-            //    alert.Dispose();
-            //});
-            //alert.Show();           
         }
     }
 }

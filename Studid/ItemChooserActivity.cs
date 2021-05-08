@@ -101,6 +101,12 @@ namespace Studid
                 AddItemDialog addItemDialog = AddItemDialog.newInstance(fileType);
                 addItemDialog.SetTargetFragment(selectedFragment, 1);
                 addItemDialog.Show(SupportFragmentManager, "add_dialog");
+            }else
+            {
+                AndroidX.AppCompat.App.AlertDialog.Builder alert = new MaterialAlertDialogBuilder(this);
+                alert.SetTitle(Resource.String.connection_title)
+                        .SetMessage(Resource.String.connection_message)
+                        .Show();
             }
         }
 

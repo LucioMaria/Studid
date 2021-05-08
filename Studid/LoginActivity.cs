@@ -83,7 +83,8 @@ namespace Studid.Dialogs
             var account = CrossFirebaseAuth.Current.Instance.CurrentUser;
             if (account != null)
             {
-                signInButton.Visibility = ViewStates.Visible;
+                closeBtn.Visibility = ViewStates.Visible;
+                signInButton.Visibility = ViewStates.Invisible;
                 logOutButton.Visibility = ViewStates.Visible;
                 usernameTv.Text = account.DisplayName;
                 Glide.With(this)

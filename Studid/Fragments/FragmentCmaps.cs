@@ -298,16 +298,17 @@ namespace Studid.Fragments
             return (netInfo != null && netInfo.IsConnected);
         }
 
-        public void OnSuccess(Java.Lang.Object result)
+        public async void OnSuccess(Java.Lang.Object result)
         {
             progressIndicator.Hide();
             if (result is UploadTask.TaskSnapshot)
             {
-                CrossCloudFirestore.Current.Instance
+                var durl = await storagefolder.GetDownloadUrlAsync();
+                await CrossCloudFirestore.Current.Instance
                 .Collection("Users").Document(user.Uid)
                 .Collection("Exams").Document(examId)
                 .Collection(STORAGE_FOLDER).Document(itemId)
-                .SetAsync(new ItemModel(itemId, filename, storagefolder.GetDownloadUrl().ToString()));
+                .SetAsync(new ItemModel(itemId, filename, durl.ToString()));
             }
             if (result is FileDownloadTask.TaskSnapshot)
                 FileOpener(fileToOpen);

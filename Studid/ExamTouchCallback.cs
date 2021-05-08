@@ -70,6 +70,7 @@ namespace Studid
                         deleteFirestoreCollection(exam.Collection("Recordings"));
                         deleteFirestoreCollection(exam.Collection("Cmaps"));
                         deleteFirestoreCollection(exam.Collection("Exercises"));
+                        exam.DeleteAsync();
 
                         deleteStorageBuket(storageref.Child(user.Uid + "/" + holder.examId + "/"+"Flashcards"));
                         deleteStorageBuket(storageref.Child(user.Uid + "/" + holder.examId + "/" + "Recordings"));

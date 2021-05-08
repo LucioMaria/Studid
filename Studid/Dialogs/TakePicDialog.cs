@@ -97,8 +97,8 @@ namespace Studid.Dialogs
                     }
                 }
             };
-           // DispatchTakePictureIntent();
-            return base.OnCreateView(inflater, container, savedInstanceState);
+            DispatchTakePictureIntent();
+            return view;
         }
         private void DispatchTakePictureIntent()
         {
@@ -148,6 +148,7 @@ namespace Studid.Dialogs
             {
                 Glide.With(Context)
                         .Load(photoFile.Path)
+                        .Override(640,640)
                         .FitCenter()
                         .Into(picView);
             }

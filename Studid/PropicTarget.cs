@@ -46,6 +46,7 @@ namespace Studid
                 {
                     Glide.With(context)
                         .AsBitmap()
+                        .Override(200,200)
                         .Load(user.PhotoUrl)
                         .CenterCrop()
                         .Into(new PropicTarget(menuItem));
