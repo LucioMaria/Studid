@@ -76,7 +76,8 @@ namespace Studid.Dialogs
 
         private void LoginDialogDismiss_Click(object sender, EventArgs e)
         {
-            Finish();
+            Intent intent = new Intent(this, typeof(ExamChooserActivity));
+            StartActivity(intent);
         }
         private void updateUI()
         {
@@ -118,7 +119,8 @@ namespace Studid.Dialogs
                     var firebaseresult = await CrossFirebaseAuth.Current.Instance.SignInWithCredentialAsync(credential);
                     updateUI();
                     Toast.MakeText(ApplicationContext, Resource.String.welcome_message, ToastLength.Short).Show();
-                    Finish();
+                    Intent intent = new Intent(this, typeof(ExamChooserActivity));
+                    StartActivity(intent);
                 }
                 else
                 {  //Google Sign In failed, update UI appropriately

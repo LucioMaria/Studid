@@ -39,7 +39,7 @@ using AndroidX.Core.Content;
 
 namespace Studid
 {
-    [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", MainLauncher = true)]
+    [Activity(Label = "@string/app_name", Theme = "@style/AppTheme",Icon = "@mipmap/ic_launcher", MainLauncher = true)]
     public class ExamChooserActivity : AppCompatActivity
     {
         private ImageView imageView;
@@ -49,7 +49,6 @@ namespace Studid
         MaterialToolbar topAppBar;
         private GoogleSignInClient mGoogleSignInClient;
         AddExamDialog addExamDialog;
-        private bool isLoginAlerted = false;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -116,7 +115,6 @@ namespace Studid
                 FirebaseUser user = FirebaseAuth.Instance.CurrentUser;
                 if (user != null)
                 {
-                    isLoginAlerted = false;
                     CrossCloudFirestore.Current
                         .Instance
                         .Collection("Users")
@@ -165,12 +163,8 @@ namespace Studid
                         });
                 }
                 else 
-                { 
-                    if (!isLoginAlerted)
-                    {
-                        isLoginAlerted = true;
-                        alertLogin();
-                    }
+                {
+                    alertLogin();
                     imageView.Visibility = ViewStates.Visible;
                     rv.Visibility = ViewStates.Invisible;
                 }

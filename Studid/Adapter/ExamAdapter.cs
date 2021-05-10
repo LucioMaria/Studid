@@ -59,7 +59,7 @@ namespace Studid.Adapter
             }
             else if (result.Days >= 15)
             {
-                holder.examDateTV.SetTextColor(new Color(ContextCompat.GetColor(context, Resource.Color.colorPrimarylight)));
+                holder.examDateTV.SetTextColor(new Color(ContextCompat.GetColor(context, Resource.Color.colorTextPrimary)));
             }
             else if (result.Days > 2)
             {
@@ -67,7 +67,7 @@ namespace Studid.Adapter
             }
             else if (result.TotalDays < 0)
             {
-                holder.examDateTV.SetTextColor(new Color(ContextCompat.GetColor(context, Resource.Color.colorTextPrimary)));
+                holder.examDateTV.SetTextColor(new Color(ContextCompat.GetColor(context, Resource.Color.colorTextSecondary)));
             }
             holder.cfuButton.Text = ExamList[position].cfu + "";
         }
